@@ -12,8 +12,7 @@ public class MainController {
     @GetMapping
     public RedirectView getAuthRequest(@RequestParam String username) {
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("https://docs.google.com/forms/d/e/1FAIpQLSc1JLQ1Oxcgy7730NoAsJrUI5JhjgXTSUOKnm2bUE-cH6Nm1Q/viewform?usp=pp_url&entry.518733161=@" + username);
-        //trigger build
+        redirectView.setUrl("https://docs.google.com/forms/d/e/1FAIpQLSdUCvtEh9DJ-m_eBHhbv7Z-B2jH6ig5AgfF3bycG7UQ3_nwJQ/viewform?usp=pp_url&entry.518733161=@" + username);
         return redirectView;
     }
 }
