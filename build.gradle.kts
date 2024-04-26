@@ -31,6 +31,7 @@ dependencies {
     implementation("com.google.api-client:google-api-client:2.2.0")
     implementation("com.google.oauth-client:google-oauth-client-jetty:1.34.1")
     implementation("com.google.apis:google-api-services-sheets:v4-rev612-1.25.0")
+    implementation("com.google.cloud.sql:jdbc-socket-factory-core:1.18.0")
     compileOnly("com.google.cloud.sql:postgres-socket-factory:1.18.0")
 }
 
