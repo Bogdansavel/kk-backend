@@ -1,9 +1,8 @@
 spring:
   application.name: kkbackend
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:postgresql:///postgres?cloudSqlInstance=kk-backend-418413:europe-west1:kk-backend-db&socketFactory=com.google.cloud.sql.postgres.SocketFactory&user=postgres&password=postgres
   jpa:
     hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
