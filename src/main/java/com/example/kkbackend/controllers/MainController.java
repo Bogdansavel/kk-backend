@@ -42,7 +42,7 @@ public class MainController {
             memberRepository.save(member);
         } else {
             member = memberOptional.get();
-            if (!member.getUserName().equals(authenticatedUserDto.getUsername()) || !member.getPhotoUrl().equals(authenticatedUserDto.getPhotoUrl())) {
+            if (!member.getUserName().equals(authenticatedUserDto.getUsername())) {
                 member.setUserName(authenticatedUserDto.getUsername());
                 member.setPhotoUrl(authenticatedUserDto.getPhotoUrl());
                 memberRepository.save(member);
