@@ -40,13 +40,6 @@ public class MainController {
                     .photoUrl(authenticatedUserDto.getPhotoUrl())
                     .build();
             memberRepository.save(member);
-        } else {
-            member = memberOptional.get();
-            if (!member.getUserName().equals(authenticatedUserDto.getUsername())) {
-                member.setUserName(authenticatedUserDto.getUsername());
-                member.setPhotoUrl(authenticatedUserDto.getPhotoUrl());
-                memberRepository.save(member);
-            }
         }
         RedirectView redirectView = new RedirectView();
         Optional<RegistrationInfo> registrationInfoOptional = registrationInfoRepository.getRegistrationInfoByContact("@" + authenticatedUserDto.getUsername());
