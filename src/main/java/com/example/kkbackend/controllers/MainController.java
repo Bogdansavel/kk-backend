@@ -6,6 +6,8 @@ import com.example.kkbackend.entities.RegistrationInfo;
 import com.example.kkbackend.repositories.MemberRepository;
 import com.example.kkbackend.repositories.RegistrationInfoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.codec.Hex;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -82,9 +84,8 @@ public class MainController {
     }
 
     @PostMapping("cancel")
-    public boolean cancel(@RequestBody String nickname) {
-        System.out.println(nickname);
-        return true;
+    public ResponseEntity<?> cancel(@RequestBody String nickname) {
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private boolean verifyAuth(AuthenticatedUserDto authenticatedUserDto) throws IllegalAccessException {
