@@ -81,6 +81,12 @@ public class MainController {
         return true;
     }
 
+    @PostMapping("cancel")
+    public boolean cancel(@RequestBody String nickname) {
+        System.out.println(nickname);
+        return true;
+    }
+
     private boolean verifyAuth(AuthenticatedUserDto authenticatedUserDto) throws IllegalAccessException {
         Map<String, Object> request = convert(authenticatedUserDto);
         String hash = (String) request.get("hash");
