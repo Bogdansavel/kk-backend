@@ -47,13 +47,13 @@ public class MainController {
         Optional<RegistrationInfo> registrationInfoOptional = registrationInfoRepository.getRegistrationInfoByContact("@" + authenticatedUserDto.getUsername());
         if (registrationInfoOptional.isPresent()) {
             RegistrationInfo registrationInfo = registrationInfoOptional.get();
-            redirectView.setUrl("https://docs.google.com/forms/d/e/1FAIpQLSdUCvtEh9DJ-m_eBHhbv7Z-B2jH6ig5AgfF3bycG7UQ3_nwJQ/viewform?usp=pp_url&" +
+            redirectView.setUrl("https://forms.gle/RBP69i9CnYQRAvXi9/viewform?usp=pp_url&" +
                     "entry.384833544=" + URLEncoder.encode(registrationInfo.getName(), StandardCharsets.UTF_8) +
                     "&entry.2064892854=" + URLEncoder.encode(registrationInfo.getGender(), StandardCharsets.UTF_8) +
                     "&entry.1243795402=" + URLEncoder.encode("Нет", StandardCharsets.UTF_8) +
                     "&entry.518733161=" + registrationInfo.getContact());
         } else {
-            redirectView.setUrl("https://docs.google.com/forms/d/e/1FAIpQLSdUCvtEh9DJ-m_eBHhbv7Z-B2jH6ig5AgfF3bycG7UQ3_nwJQ/viewform?usp=pp_url&" +
+            redirectView.setUrl("https://forms.gle/RBP69i9CnYQRAvXi9/viewform?usp=pp_url&/viewform?usp=pp_url&" +
                     "&entry.518733161=" + "@" + authenticatedUserDto.getUsername());
         }
         return redirectView;
