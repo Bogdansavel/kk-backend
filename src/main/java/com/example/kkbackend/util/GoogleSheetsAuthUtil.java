@@ -15,7 +15,6 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
@@ -23,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-@Component
 public class GoogleSheetsAuthUtil {
     private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
@@ -53,7 +51,7 @@ public class GoogleSheetsAuthUtil {
     }
 
 
-    public void deleteRow(String nickname) throws IOException, GeneralSecurityException {
+    public static void deleteRow(String nickname) throws IOException, GeneralSecurityException {
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         final String spreadsheetId = "1yF0Y_hsgmvg7ZjmqOf6QAnaz9SSRzM-3N4Xo70AHDlQ";
