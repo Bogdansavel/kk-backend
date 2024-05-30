@@ -5,6 +5,10 @@ import com.example.kkbackend.dtos.RegistrationInfoDto;
 import com.example.kkbackend.entities.RegistrationInfo;
 import com.example.kkbackend.repositories.MemberRepository;
 import com.example.kkbackend.repositories.RegistrationInfoRepository;
+import com.example.kkbackend.util.GoogleSheetsAuthUtil;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.services.sheets.v4.Sheets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +18,11 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +36,7 @@ public class MainController {
     private final String TELEGRAM_TOKEN = "7144526471:AAG2XsY2tw9lJUVbx_x4z2Rhssiuk6IAaCg";
     private final MemberRepository memberRepository;
     private final RegistrationInfoRepository registrationInfoRepository;
+    private final GoogleSheetsAuthUtil googleSheetsAuthUtil;
 
     @GetMapping("main")
     public RedirectView getAuthRequest(AuthenticatedUserDto authenticatedUserDto) throws IllegalAccessException {
@@ -84,8 +91,9 @@ public class MainController {
     }
 
     @PostMapping("cancel")
-    public ResponseEntity<?> cancel(@RequestBody String nickname) {
-        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    public boolean cancel(@RequestBody String nickname) throws GeneralSecurityException, IOException {
+        googleSheetsAuthUtil.deleteRow(nickname);
+        return true;
     }
 
     private boolean verifyAuth(AuthenticatedUserDto authenticatedUserDto) throws IllegalAccessException {
