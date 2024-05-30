@@ -43,4 +43,5 @@ tasks.withType<Jar> {
     manifest {
         attributes["KkbackendApplication"] = "com.example.kkbackend"
     }
+    destinationDirectory = File("./")
 }
