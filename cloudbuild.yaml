@@ -1,6 +1,5 @@
-runtime: java17
 steps:
-  - name: gcr.io/cloud-builders/gradle
+  - name: gcr.io/cloud-builders/gradle:7.6-jdk17
     args: [ 'bootJar' ]
   - name: gcr.io/cloud-builders/docker
     args:
