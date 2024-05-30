@@ -14,11 +14,9 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import org.springframework.beans.factory.annotation.Value;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,16 +33,12 @@ public class GoogleSheetsAuthUtil {
      */
     private static final List<String> SCOPES =
             Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY);
-    private static final String CREDENTIALS_FILE_PATH = "/client_secret_338111463629-9pd6l3iksue0d3g689u6ncc9b8g6f6r3.apps.googleusercontent.com.json";
+    @Value("${sm://google-sheets-secret}")
+    private static final String secret = "";
     public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
             throws IOException {
-        // Load client secrets.
-        InputStream in = GoogleSheetsAuthUtil.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
-        if (in == null) {
-            throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
-        }
         GoogleClientSecrets clientSecrets =
-                GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+                GoogleClientSecrets.load(JSON_FACTORY, new StringReader(secret));
 
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(

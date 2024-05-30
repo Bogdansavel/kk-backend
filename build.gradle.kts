@@ -32,6 +32,7 @@ dependencies {
     implementation("com.google.oauth-client:google-oauth-client-jetty:1.34.1")
     implementation("com.google.apis:google-api-services-sheets:v4-rev612-1.25.0")
     implementation("com.google.cloud.sql:postgres-socket-factory:1.18.0")
+    runtimeOnly("com.google.cloud:spring-cloud-gcp-starter-secretmanager:5.3.0")
 }
 
 tasks.withType<Test> {
