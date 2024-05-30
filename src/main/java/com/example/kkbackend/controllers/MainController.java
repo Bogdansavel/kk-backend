@@ -6,12 +6,8 @@ import com.example.kkbackend.entities.RegistrationInfo;
 import com.example.kkbackend.repositories.MemberRepository;
 import com.example.kkbackend.repositories.RegistrationInfoRepository;
 import com.example.kkbackend.util.GoogleSheetsAuthUtil;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.services.sheets.v4.Sheets;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.crypto.codec.Hex;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
