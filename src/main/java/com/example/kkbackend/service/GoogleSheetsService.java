@@ -33,7 +33,7 @@ public class GoogleSheetsService {
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
-    @Value("${spring.application.secret.google-sheets")
+    @Value("${spring.application.secret.google-sheets:default}")
     private final String secret;
     public Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         log.info(secret);
