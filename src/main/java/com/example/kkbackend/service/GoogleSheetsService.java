@@ -38,7 +38,7 @@ public class GoogleSheetsService {
      * If modifying these scopes, delete your previously saved tokens/ folder.
      */
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
-    @Value("${sm://google-sheets-secret}")
+    @Value("${sm://projects/338111463629/secrets/google-sheets-secret}")
     private final String secret;
     public Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         log.info(secret);
