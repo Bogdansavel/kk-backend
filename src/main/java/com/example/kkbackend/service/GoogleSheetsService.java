@@ -12,8 +12,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
-import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
-import com.google.api.services.sheets.v4.model.ValueRange;
+import com.google.api.services.sheets.v4.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +35,8 @@ public class GoogleSheetsService {
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     @Value("${spring.application.secret.google-sheets}")
     private String secret;
+    private final String spreadsheetId = "1yF0Y_hsgmvg7ZjmqOf6QAnaz9SSRzM-3N4Xo70AHDlQ";
+    private Sheets service;
     public Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         log.info(secret);
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new StringReader(secret));
@@ -50,20 +52,96 @@ public class GoogleSheetsService {
     }
 
 
-    public void deleteRow(String nickname) throws IOException, GeneralSecurityException {
-        // Build a new authorized API client service.
+    public boolean cancel(String username) throws IOException, GeneralSecurityException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        final String spreadsheetId = "1yF0Y_hsgmvg7ZjmqOf6QAnaz9SSRzM-3N4Xo70AHDlQ";
-        final String range = "Class Data!J1:J";
-        Sheets service =
-                new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+        service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                         .setApplicationName(APPLICATION_NAME)
                         .build();
-        ValueRange body = new ValueRange()
-                .setValues(Arrays.asList(
-                        Arrays.asList("Expenses January")));
-        UpdateValuesResponse result = service.spreadsheets().values()
-                .update(spreadsheetId, "J1", body)
+
+        List<String> ranges = List.of("G2");
+        BatchGetValuesResponse readResult = service.spreadsheets().values()
+                .batchGet(spreadsheetId)
+                .setRanges(ranges)
                 .execute();
+        String date = (String) readResult.getValueRanges().get(0).getValues().get(0).get(0);
+
+        ranges = List.of("A2:E");
+        readResult = service.spreadsheets().values()
+                .batchGet(spreadsheetId)
+                .setRanges(ranges)
+                .execute();
+        int i = 2;
+        for (List<Object> value : readResult.getValueRanges().getFirst().getValues()) {
+            if ((value.get(0)).equals(date)
+            && (value.get(4)).equals(username)) {
+                Color redColor = new Color();
+                redColor.setRed(14f);
+                redColor.setGreen(104f);
+                redColor.setBlue(104f);
+                paintRow(i, redColor);
+                return true;
+            }
+            i++;
+        }
+        return false;
+    }
+
+    public boolean revert(String username) throws IOException, GeneralSecurityException {
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+
+        List<String> ranges = List.of("G2");
+        BatchGetValuesResponse readResult = service.spreadsheets().values()
+                .batchGet(spreadsheetId)
+                .setRanges(ranges)
+                .execute();
+        String date = (String) readResult.getValueRanges().get(0).getValues().get(0).get(0);
+
+        ranges = List.of("A2:E");
+        readResult = service.spreadsheets().values()
+                .batchGet(spreadsheetId)
+                .setRanges(ranges)
+                .execute();
+        int i = 2;
+        for (List<Object> value : readResult.getValueRanges().getFirst().getValues()) {
+            if ((value.get(0)).equals(date)
+                    && (value.get(4)).equals(username)) {
+                Color whiteColor = new Color();
+                paintRow(i, whiteColor);
+                return true;
+            }
+            i++;
+        }
+        return false;
+    }
+
+    private void paintRow(int rowNumber, Color color) throws IOException {
+        final int sheetId = 1582377723;
+        CellFormat cellFormat = new CellFormat(); //setting cell color
+
+        GridRange gridRange = new GridRange(); //setting grid that we will paint
+        gridRange.setSheetId(sheetId); //you can find it in your URL - param "gid"
+        gridRange.setStartRowIndex(rowNumber-1);
+        gridRange.setEndRowIndex(rowNumber);
+        gridRange.setStartColumnIndex(0);
+        gridRange.setEndColumnIndex(6);
+        cellFormat.setBackgroundColor(color);
+
+        CellData cellData = new CellData();
+        cellData.setUserEnteredFormat(cellFormat);
+
+        List<Request> requestList = new ArrayList<>();
+        requestList.add(new Request().setRepeatCell(new RepeatCellRequest().setCell(cellData)
+                .setRange(gridRange).setFields("userEnteredFormat.backgroundColor")));
+
+        BatchUpdateSpreadsheetRequest batchUpdateSpreadsheetRequest = new BatchUpdateSpreadsheetRequest();
+        batchUpdateSpreadsheetRequest.setRequests(requestList);
+
+        final Sheets.Spreadsheets.BatchUpdate batchUpdate = service.
+                spreadsheets().batchUpdate(spreadsheetId, batchUpdateSpreadsheetRequest);
+
+        batchUpdate.execute();
     }
 }

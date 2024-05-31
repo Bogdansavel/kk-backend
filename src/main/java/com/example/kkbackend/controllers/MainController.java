@@ -87,9 +87,13 @@ public class MainController {
     }
 
     @PostMapping("cancel")
-    public boolean cancel(@RequestBody String nickname) throws GeneralSecurityException, IOException {
-        googleSheetsService.deleteRow(nickname);
-        return true;
+    public boolean cancel(@RequestBody AuthenticatedUserDto authenticatedUserDto) throws GeneralSecurityException, IOException {
+        return googleSheetsService.cancel(authenticatedUserDto.getUsername());
+    }
+
+    @PostMapping("revert")
+    public boolean revert(@RequestBody AuthenticatedUserDto authenticatedUserDto) throws GeneralSecurityException, IOException {
+        return googleSheetsService.revert(authenticatedUserDto.getUsername());
     }
 
     private boolean verifyAuth(AuthenticatedUserDto authenticatedUserDto) throws IllegalAccessException {
