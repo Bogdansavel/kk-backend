@@ -71,7 +71,7 @@ public class GoogleSheetsService {
                 .setRanges(ranges)
                 .execute();
         int i = 2;
-        for (List<Object> value : readResult.getValueRanges().getFirst().getValues()) {
+        for (List<Object> value : readResult.getValueRanges().get(0).getValues()) {
             if ((value.get(0)).equals(date)
             && (value.get(4)).equals(username)) {
                 Color redColor = new Color();
@@ -105,7 +105,7 @@ public class GoogleSheetsService {
                 .setRanges(ranges)
                 .execute();
         int i = 2;
-        for (List<Object> value : readResult.getValueRanges().getFirst().getValues()) {
+        for (List<Object> value : readResult.getValueRanges().get(0).getValues()) {
             if ((value.get(0)).equals(date)
                     && (value.get(4)).equals(username)) {
                 Color whiteColor = new Color();
