@@ -2,7 +2,7 @@ spring:
   application:
     name: kkbackend
     secret:
-      google-sheets: ${sm://projects/338111463629/secrets/google-sheets-secret}
+      google-sheets: "${sm://projects/338111463629/secrets/google-sheets-secret}"
   datasource:
     url: jdbc:postgresql:///postgres?cloudSqlInstance=kk-backend-418413:europe-west1:kk-backend-db&socketFactory=com.google.cloud.sql.postgres.SocketFactory&user=postgres&password=postgres
   jpa:
@@ -14,4 +14,4 @@ spring:
       sql:
         enabled: false
   config:
-    import: sm://
+    import: "sm://"
