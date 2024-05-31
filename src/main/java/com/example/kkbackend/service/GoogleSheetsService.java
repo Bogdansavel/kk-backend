@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +44,7 @@ public class GoogleSheetsService {
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                 .setAccessType("offline")
                 .build();
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8889).build();
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setHost(InetAddress.getLoopbackAddress().getHostName()).setPort(8889).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
