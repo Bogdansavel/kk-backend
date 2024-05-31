@@ -34,7 +34,7 @@ public class GoogleSheetsService {
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     @Value("${spring.application.secret.google-sheets}")
-    private String secret;
+    private static String secret;
     public Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         log.info(secret);
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new StringReader(secret));
@@ -45,7 +45,7 @@ public class GoogleSheetsService {
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                 .setAccessType("offline")
                 .build();
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8081).build();
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
