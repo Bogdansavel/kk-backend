@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: "sm://"
   application:
     name: kkbackend
     secret:
@@ -13,5 +15,3 @@ spring:
     gcp:
       sql:
         enabled: false
-  config:
-    import: "sm://"
