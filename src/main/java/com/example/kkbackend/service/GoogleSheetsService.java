@@ -32,13 +32,8 @@ public class GoogleSheetsService {
     private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
-
-    /**
-     * Global instance of the scopes required by this quickstart.
-     * If modifying these scopes, delete your previously saved tokens/ folder.
-     */
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
-    @Value("${sm://projects/338111463629/secrets/google-sheets-secret}")
+    @Value("${spring.application.secret.google-sheets")
     private final String secret;
     public Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         log.info(secret);
