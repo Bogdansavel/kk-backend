@@ -50,7 +50,7 @@ public class MainController {
         Optional<RegistrationInfo> registrationInfoOptional = registrationInfoRepository.getRegistrationInfoByContact("@" + authenticatedUserDto.getUsername());
         if (registrationInfoOptional.isPresent()) {
             RegistrationInfo registrationInfo = registrationInfoOptional.get();
-            redirectView.setUrl("https://docs.google.com/forms/d/1ZaymP4_t-XKoqLo0LOeWudbTEWidfLXJVzjoLbch_e8/viewform?usp=pp_url&" +
+            redirectView.setUrl("https://docs.google.com/forms/d/1niEmYw58porceUl9-kvFBif9RNvM3Ywe1cSijPeqVOY/viewform?usp=pp_url&" +
                     "entry.384833544=" + URLEncoder.encode(registrationInfo.getName(), StandardCharsets.UTF_8) +
                     "&entry.2064892854=" + URLEncoder.encode(registrationInfo.getGender(), StandardCharsets.UTF_8) +
                     "&entry.1243795402=" + URLEncoder.encode("Нет", StandardCharsets.UTF_8) +
