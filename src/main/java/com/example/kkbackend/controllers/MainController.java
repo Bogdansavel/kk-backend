@@ -1,6 +1,7 @@
 package com.example.kkbackend.controllers;
 
 import com.example.kkbackend.dtos.AuthenticatedUserDto;
+import com.example.kkbackend.dtos.CancelDto;
 import com.example.kkbackend.dtos.RegistrationInfoDto;
 import com.example.kkbackend.entities.RegistrationInfo;
 import com.example.kkbackend.repositories.MemberRepository;
@@ -90,8 +91,8 @@ public class MainController{
     }
 
     @PostMapping("cancel")
-    public boolean cancel(@RequestBody AuthenticatedUserDto authenticatedUserDto) throws GeneralSecurityException, IOException {
-        return googleSheetsService.cancel(authenticatedUserDto.getUsername());
+    public boolean cancel(@RequestBody CancelDto cancelDto) throws GeneralSecurityException, IOException {
+        return googleSheetsService.cancel(cancelDto.username());
     }
 
     @PostMapping("revert")
