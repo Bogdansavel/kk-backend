@@ -1,17 +1,13 @@
 package com.example.kkbackend.controllers;
 
 import com.example.kkbackend.dtos.AuthenticatedUserDto;
-import com.example.kkbackend.dtos.CancelDto;
 import com.example.kkbackend.dtos.RegistrationInfoDto;
 import com.example.kkbackend.entities.RegistrationInfo;
 import com.example.kkbackend.repositories.MemberRepository;
 import com.example.kkbackend.repositories.RegistrationInfoRepository;
 import com.example.kkbackend.service.GoogleSheetsService;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.gson.GsonFactory;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.codec.Hex;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -91,8 +87,8 @@ public class MainController{
     }
 
     @PostMapping("cancel")
-    public boolean cancel(@RequestBody CancelDto cancelDto) throws GeneralSecurityException, IOException {
-        return googleSheetsService.cancel(cancelDto.username());
+    public boolean cancel(@RequestBody AuthenticatedUserDto authenticatedUserDto) throws GeneralSecurityException, IOException {
+        return googleSheetsService.cancel(authenticatedUserDto.getUsername());
     }
 
     @PostMapping("revert")
