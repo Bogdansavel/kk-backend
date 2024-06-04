@@ -6,8 +6,11 @@ import com.example.kkbackend.entities.RegistrationInfo;
 import com.example.kkbackend.repositories.MemberRepository;
 import com.example.kkbackend.repositories.RegistrationInfoRepository;
 import com.example.kkbackend.service.GoogleSheetsService;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.codec.Hex;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -28,7 +31,7 @@ import com.example.kkbackend.entities.Member;
 
 @RestController
 @RequiredArgsConstructor
-public class MainController {
+public class MainController{
     private final String TELEGRAM_TOKEN = "7144526471:AAG2XsY2tw9lJUVbx_x4z2Rhssiuk6IAaCg";
     private final MemberRepository memberRepository;
     private final RegistrationInfoRepository registrationInfoRepository;
