@@ -33,18 +33,19 @@ public class GoogleSheetsService {
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     @Value("${spring.application.secret.google-sheets}")
     private String secret;
-    private final String spreadsheetId = "1yF0Y_hsgmvg7ZjmqOf6QAnaz9SSRzM-3N4Xo70AHDlQ";
+    private final String spreadsheetId = "1C-eAcBjMMnaTkbrRUdnNMss1u0k1tfv_QjOrH68D83E";
     private Sheets service;
     public Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new StringReader(secret));
-
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                .setAccessType("offline")
                 .build();
 
-        return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
 
@@ -114,7 +115,7 @@ public class GoogleSheetsService {
     }
 
     private void paintRow(int rowNumber, Color color) throws IOException {
-        final int sheetId = 1582377723;
+        final int sheetId = 499746787;
         CellFormat cellFormat = new CellFormat(); //setting cell color
 
         GridRange gridRange = new GridRange(); //setting grid that we will paint
