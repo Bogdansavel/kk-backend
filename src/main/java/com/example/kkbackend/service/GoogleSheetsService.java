@@ -10,7 +10,6 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +22,6 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class GoogleSheetsService {
     private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
@@ -37,7 +35,6 @@ public class GoogleSheetsService {
     }
 
     public boolean cancel(String username) throws IOException, GeneralSecurityException {
-        log.info(username);
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials())
                         .setApplicationName(APPLICATION_NAME)
@@ -94,6 +91,9 @@ public class GoogleSheetsService {
             if ((value.get(0)).equals(date)
                     && (value.get(4)).equals(username)) {
                 Color whiteColor = new Color();
+                whiteColor.setBlue(1f);
+                whiteColor.setRed(1f);
+                whiteColor.setGreen(1f);
                 paintRow(i, whiteColor);
                 return true;
             }
