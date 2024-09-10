@@ -29,6 +29,7 @@ public class MainController{
     private final String TELEGRAM_TOKEN = "7144526471:AAG2XsY2tw9lJUVbx_x4z2Rhssiuk6IAaCg";
     private final MemberRepository memberRepository;
     private final RegistrationInfoRepository registrationInfoRepository;
+    private static final String GOOGLE_FORM_BASE_URL = "https://docs.google.com/forms/d/1niEmYw58porceUl9-kvFBif9RNvM3Ywe1cSijPeqVOY/viewform?usp=pp_url";
 
     @GetMapping("main")
     public RedirectView getAuthRequest(AuthenticatedUserDto authenticatedUserDto) throws IllegalAccessException {
@@ -46,13 +47,13 @@ public class MainController{
         Optional<RegistrationInfo> registrationInfoOptional = registrationInfoRepository.getRegistrationInfoByContact("@" + authenticatedUserDto.getUsername());
         if (registrationInfoOptional.isPresent()) {
             RegistrationInfo registrationInfo = registrationInfoOptional.get();
-            redirectView.setUrl("https://docs.google.com/forms/d/1niEmYw58porceUl9-kvFBif9RNvM3Ywe1cSijPeqVOY/viewform?usp=pp_url&" +
-                    "entry.384833544=" + URLEncoder.encode(registrationInfo.getName(), StandardCharsets.UTF_8) +
+            redirectView.setUrl(GOOGLE_FORM_BASE_URL +
+                    "&entry.384833544=" + URLEncoder.encode(registrationInfo.getName(), StandardCharsets.UTF_8) +
                     "&entry.2064892854=" + URLEncoder.encode(registrationInfo.getGender(), StandardCharsets.UTF_8) +
                     "&entry.1243795402=" + URLEncoder.encode("Нет", StandardCharsets.UTF_8) +
                     "&entry.518733161=" + registrationInfo.getContact());
         } else {
-            redirectView.setUrl("https://docs.google.com/forms/d/1ZaymP4_t-XKoqLo0LOeWudbTEWidfLXJVzjoLbch_e8/viewform?usp=pp_url&/viewform?usp=pp_url&" +
+            redirectView.setUrl(GOOGLE_FORM_BASE_URL +
                     "&entry.518733161=" + "@" + authenticatedUserDto.getUsername());
         }
         return redirectView;
