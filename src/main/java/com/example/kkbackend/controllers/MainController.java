@@ -5,7 +5,6 @@ import com.example.kkbackend.dtos.RegistrationInfoDto;
 import com.example.kkbackend.entities.RegistrationInfo;
 import com.example.kkbackend.repositories.MemberRepository;
 import com.example.kkbackend.repositories.RegistrationInfoRepository;
-import com.example.kkbackend.service.GoogleSheetsService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.crypto.codec.Hex;
@@ -14,11 +13,9 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +29,6 @@ public class MainController{
     private final String TELEGRAM_TOKEN = "7144526471:AAG2XsY2tw9lJUVbx_x4z2Rhssiuk6IAaCg";
     private final MemberRepository memberRepository;
     private final RegistrationInfoRepository registrationInfoRepository;
-    private final GoogleSheetsService googleSheetsService;
 
     @GetMapping("main")
     public RedirectView getAuthRequest(AuthenticatedUserDto authenticatedUserDto) throws IllegalAccessException {
@@ -84,16 +80,6 @@ public class MainController{
             registrationInfoRepository.save(registrationInfo);
         }
         return true;
-    }
-
-    @PostMapping("cancel")
-    public boolean cancel(@RequestBody AuthenticatedUserDto authenticatedUserDto) throws GeneralSecurityException, IOException {
-        return googleSheetsService.cancel(authenticatedUserDto.getUsername());
-    }
-
-    @PostMapping("revert")
-    public boolean revert(@RequestBody AuthenticatedUserDto authenticatedUserDto) throws GeneralSecurityException, IOException {
-        return googleSheetsService.revert(authenticatedUserDto.getUsername());
     }
 
     private boolean verifyAuth(AuthenticatedUserDto authenticatedUserDto) throws IllegalAccessException {
