@@ -6,7 +6,9 @@ spring:
     secret:
       google-sheets: "${sm://projects/338111463629/secrets/google-sheets-secret}"
   datasource:
-    url: jdbc:postgresql:///postgres?cloudSqlInstance=kk-backend-418413:europe-west1:kk-backend-db&socketFactory=com.google.cloud.sql.postgres.SocketFactory&user=postgres&password=postgres
+    url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
+    username: ${PROD_DB_USERNAME}
+    password: ${PROD_DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
