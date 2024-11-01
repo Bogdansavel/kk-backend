@@ -8,10 +8,15 @@ spring:
     username: ${PROD_DB_USERNAME}
     password: ${PROD_DB_PASSWORD}
   jpa:
+    show-sql: true
     hibernate:
+      jdbc:
+        time_zone: UTC
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   cloud:
     gcp:
       sql:
         enabled: false
+
+current-event: 03d9dda1-5b7e-464b-9919-04382cec75e4

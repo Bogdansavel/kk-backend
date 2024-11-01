@@ -15,6 +15,7 @@ public class RegistrationInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     private String name;
     private String gender;
     private String contact;

@@ -1,14 +1,19 @@
 package com.example.kkbackend.controllers;
 
-import com.example.kkbackend.dtos.AuthenticatedUserDto;
-import com.example.kkbackend.dtos.RegistrationInfoDto;
+import com.example.kkbackend.dtos.*;
 import com.example.kkbackend.entities.RegistrationInfo;
+import com.example.kkbackend.repositories.EventRepository;
 import com.example.kkbackend.repositories.MemberRepository;
 import com.example.kkbackend.repositories.RegistrationInfoRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.codec.Hex;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.crypto.Mac;
@@ -17,18 +22,21 @@ import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import com.example.kkbackend.entities.Member;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class MainController{
     private final String TELEGRAM_TOKEN = "7144526471:AAG2XsY2tw9lJUVbx_x4z2Rhssiuk6IAaCg";
     private final MemberRepository memberRepository;
     private final RegistrationInfoRepository registrationInfoRepository;
+    private final EventRepository eventRepository;
+
+    @Value("${current-event}")
+    private String currentEvent;
     private static final String GOOGLE_FORM_BASE_URL = "https://docs.google.com/forms/d/1niEmYw58porceUl9-kvFBif9RNvM3Ywe1cSijPeqVOY/viewform?usp=pp_url";
 
     @GetMapping("main")
@@ -57,6 +65,87 @@ public class MainController{
                     "&entry.518733161=" + "@" + authenticatedUserDto.getUsername());
         }
         return redirectView;
+    }
+
+    @GetMapping("members")
+    public List<MemberDto> getMembers() {
+        return eventRepository.getById(UUID.fromString(currentEvent)).getMembers()
+                .stream()
+                .map(member -> MemberDto.builder()
+                        .userName(member.getUserName())
+                        .freshBlood(member.isFreshBlood())
+                        .build())
+                .toList();
+    }
+
+    @PostMapping("register")
+    @Transactional
+    public RegisterResponseDto register(@RequestBody RegisterDto registerDto) {
+        var member = memberRepository.getMemberByUserName(registerDto.username());
+        if (member.isEmpty()) {
+            member = Optional.of(memberRepository.save(
+                    Member.builder()
+                            .userName(registerDto.username())
+                            .events(new HashSet<>())
+                            .freshBlood(true)
+                            .build()));
+        }
+        if (member.get().isFreshBlood() && !member.get().getEvents().isEmpty()) {
+            member.get().setFreshBlood(false);
+            member = Optional.of(memberRepository.save(member.get()));
+        }
+        var event = eventRepository.getById(UUID.fromString(currentEvent));
+        if (event.getMembers().contains(member.get())) {
+            return RegisterResponseDto.builder().isAlreadyRegistered(true).build();
+        }
+        event.getMembers().add(member.get());
+        member.get().getEvents().add(event);
+        event = eventRepository.save(event);
+
+        return RegisterResponseDto.builder()
+                .membersCount(event.getMembers().size())
+                .isAlreadyRegistered(false)
+                .messages(event.getTelegramMessages()
+                        .stream()
+                        .map(m -> TelegramMessageDto.builder()
+                                .messageId(m.getMessageId())
+                                .chatId(m.getChatId())
+                                .build()).collect(Collectors.toList()))
+                .build();
+    }
+
+    @PostMapping("unregister")
+    @Transactional
+    public RegisterResponseDto unregister(@RequestBody RegisterDto registerDto) {
+        var member = memberRepository.getMemberByUserName(registerDto.username());
+        if (member.isEmpty()) {
+            member = Optional.of(memberRepository.save(
+                    Member.builder()
+                            .userName(registerDto.username())
+                            .events(new HashSet<>())
+                            .build()));
+        }
+        var event = eventRepository.getById(UUID.fromString(currentEvent));
+
+        if (!event.getMembers().contains(member.get())) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "registration not found"
+            );
+        }
+        event.getMembers().remove(member.get());
+        member.get().getEvents().remove(event);
+        event = eventRepository.save(event);
+
+        return RegisterResponseDto.builder()
+                .membersCount(event.getMembers().size())
+                .isAlreadyRegistered(false)
+                .messages(event.getTelegramMessages()
+                        .stream()
+                        .map(m -> TelegramMessageDto.builder()
+                                .messageId(m.getMessageId())
+                                .chatId(m.getChatId())
+                                .build()).collect(Collectors.toList()))
+                .build();
     }
 
     @PostMapping("update")
