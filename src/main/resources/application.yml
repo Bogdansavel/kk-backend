@@ -4,9 +4,9 @@ spring:
   application:
     name: kkbackend
   datasource:
-    url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
-    username: ${PROD_DB_USERNAME}
-    password: ${PROD_DB_PASSWORD}
+    url: jdbc:postgresql://dpg-csidkaij1k6c73ar9aig-a.frankfurt-postgres.render.com:5432/kk_db
+    username: admin
+    password: NRNMRQyqgLjdW4pywTC3eJcyZO5zNrql
   jpa:
     show-sql: true
     hibernate:
@@ -19,4 +19,4 @@ spring:
       sql:
         enabled: false
 
-current-event: 03d9dda1-5b7e-464b-9919-04382cec75e4
+current-event: 93675ec5-bced-4a4f-8f03-9fc8b152ff2b
