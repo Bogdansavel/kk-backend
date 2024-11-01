@@ -18,7 +18,7 @@ public class TelegramMessage {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private int chatId;
+    private String chatId;
     private int messageId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
