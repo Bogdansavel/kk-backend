@@ -32,4 +32,7 @@ public class Member {
             inverseJoinColumns = { @JoinColumn(name = "event_id") }
     )
     private Set<Event> events;
+
+    @OneToMany(mappedBy = "member")
+    private List<Rate> ratings;
 }
