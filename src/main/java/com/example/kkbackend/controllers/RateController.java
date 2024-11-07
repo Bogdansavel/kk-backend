@@ -5,10 +5,12 @@ import com.example.kkbackend.dtos.RateDto;
 import com.example.kkbackend.entities.Member;
 import com.example.kkbackend.entities.Movie;
 import com.example.kkbackend.entities.Rate;
+import com.example.kkbackend.repositories.MemberRepository;
 import com.example.kkbackend.repositories.MovieRepository;
 import com.example.kkbackend.repositories.RateRepository;
 import com.example.kkbackend.service.MemberService;
 import com.example.kkbackend.service.RateService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,11 +24,20 @@ public class RateController {
     private final MovieRepository movieRepository;
     private final MemberService memberService;
     private final RateService rateService;
+    private final MemberRepository memberRepository;
 
     @PostMapping
     public RateDto postRate(@RequestBody RateDto rateDto) {
         var movie = movieRepository.getReferenceById(UUID.fromString(rateDto.movieId()));
-        var member = memberService.getMemberByUsername(rateDto.username());
+        Member member;
+        try {
+            member = memberService.getMemberByUsername(rateDto.username());
+        } catch (EntityNotFoundException ex) {
+            member = memberRepository.save(Member.builder()
+                    .freshBlood(true)
+                    .userName(rateDto.username())
+                    .build());
+        }
         return fromRateToDto(
                 rateRepository.save(
                     Rate.builder()
@@ -44,7 +55,6 @@ public class RateController {
         var movie = movieRepository.getReferenceById(UUID.fromString(rateDto.movieId()));
         var member = memberService.getMemberByUsername(rateDto.username());
         var rate = rateRepository.getReferenceById(UUID.fromString(rateDto.id()));
-
         return fromRateToDto(rateRepository.save(fromDtoToRate(rateDto, member, movie)));
     }
 
