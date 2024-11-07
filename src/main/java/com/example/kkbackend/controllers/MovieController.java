@@ -1,13 +1,14 @@
 package com.example.kkbackend.controllers;
 
+import com.example.kkbackend.dtos.MovieDto;
 import com.example.kkbackend.entities.Movie;
 import com.example.kkbackend.dtos.CreateMovieDto;
 import com.example.kkbackend.repositories.MovieRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/movie")
@@ -16,7 +17,22 @@ public class MovieController {
     private final MovieRepository movieRepository;
 
     @PostMapping
-    public Movie postMovie(@RequestBody CreateMovieDto createMovieDto) {
-        return movieRepository.save(Movie.builder().kinopoiskId(createMovieDto.kinopoiskId()).build());
+    public MovieDto postMovie(@RequestBody CreateMovieDto createMovieDto) {
+        return fromMovieToDto(movieRepository.save(Movie.builder().kinopoiskId(createMovieDto.kinopoiskId()).build()));
+    }
+
+    @GetMapping("{id}")
+    public MovieDto getMovieById(@PathVariable String id) {
+        return fromMovieToDto(movieRepository.getReferenceById(UUID.fromString(id)));
+    }
+
+    public static MovieDto fromMovieToDto(Movie movie) {
+        return MovieDto.builder()
+                .id(movie.getId().toString())
+                .kinopoiskId(movie.getKinopoiskId())
+                .name(movie.getName())
+                .ratings(movie.getRatings().stream().map(RateController::fromRateToDto)
+                        .collect(Collectors.toList()))
+                .build();
     }
 }
