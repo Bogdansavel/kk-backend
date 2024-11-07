@@ -6,21 +6,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Builder
-public class Movie {
+public class Rate {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private int kinopoiskId;
-    private String name;
+    private int rating;
+    private boolean liked;
+    private boolean discussable;
 
-    @OneToMany(mappedBy = "movie")
-    private List<Rate> ratings;
+    @ManyToOne
+    @JoinColumn(name = "movie_id", nullable = false)
+    private Movie movie;
+    @ManyToOne
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 }

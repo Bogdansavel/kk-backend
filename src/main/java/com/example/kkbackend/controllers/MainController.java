@@ -29,7 +29,7 @@ import com.example.kkbackend.entities.Member;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class MainController{
+public class MainController {
     private final String TELEGRAM_TOKEN = "7144526471:AAG2XsY2tw9lJUVbx_x4z2Rhssiuk6IAaCg";
     private final MemberRepository memberRepository;
     private final RegistrationInfoRepository registrationInfoRepository;
