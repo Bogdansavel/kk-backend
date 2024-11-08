@@ -3,5 +3,5 @@ package com.example.kkbackend.dtos;
 import lombok.Builder;
 
 @Builder
-public record MemberDto(String userName, boolean freshBlood) {
+public record MemberDto(String username, boolean freshBlood) {
 }

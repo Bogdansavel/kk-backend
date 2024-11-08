@@ -6,9 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Data
@@ -26,7 +24,7 @@ public class Event {
     private String language;
     private java.sql.Date date;
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
-    private List<TelegramMessage> telegramMessages;
+    private List<TelegramMessage> telegramMessages = new ArrayList<>();
     @ManyToMany(mappedBy = "events", fetch = FetchType.LAZY)
-    private Set<Member> members;
+    private Set<Member> members = new HashSet<>();
 }

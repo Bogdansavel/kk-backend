@@ -19,4 +19,4 @@ spring:
       sql:
         enabled: false
 
-current-event: 93675ec5-bced-4a4f-8f03-9fc8b152ff2b
+current-event: e844dc2a-0eec-463d-a31e-7f7351161d67
