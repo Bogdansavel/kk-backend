@@ -3,10 +3,7 @@ package com.example.kkbackend.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -34,5 +31,5 @@ public class Member {
     private Set<Event> events;
 
     @OneToMany(mappedBy = "member")
-    private List<Rate> ratings;
+    private List<Rate> ratings = new ArrayList<>();
 }

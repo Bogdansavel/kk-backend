@@ -5,5 +5,5 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record MovieDto(String id, int kinopoiskId, String name, List<RateDto> ratings) {
+public record MovieDto(String id, int kinopoiskId, String name, List<RateDto> ratings, String photoName) {
 }

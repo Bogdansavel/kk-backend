@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +21,8 @@ public class Movie {
     private UUID id;
     private int kinopoiskId;
     private String name;
+    private String photoName;
 
     @OneToMany(mappedBy = "movie")
-    private List<Rate> ratings;
+    private List<Rate> ratings = new ArrayList<>();
 }

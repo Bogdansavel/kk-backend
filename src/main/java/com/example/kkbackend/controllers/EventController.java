@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,8 @@ public class EventController {
                         .movie(movie)
                         .language(createEventDto.language())
                         .date(java.sql.Date.valueOf(createEventDto.date()))
+                        .members(new HashSet<>())
+                        .telegramMessages(new ArrayList<>())
                         .build());
         return fromEventToDto(event);
     }
@@ -56,7 +60,7 @@ public class EventController {
                 .members(event.getMembers()
                         .stream()
                         .map(m -> MemberDto.builder()
-                                .userName(m.getUserName())
+                                .username(m.getUserName())
                                 .freshBlood(m.isFreshBlood())
                                 .build())
                         .collect(Collectors.toList())

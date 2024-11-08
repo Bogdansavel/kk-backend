@@ -31,7 +31,7 @@ public class RegisterController {
         return eventRepository.getReferenceById(UUID.fromString(currentEvent)).getMembers()
                 .stream()
                 .map(member -> MemberDto.builder()
-                        .userName(member.getUserName())
+                        .username(member.getUserName())
                         .freshBlood(member.isFreshBlood())
                         .build())
                 .toList();
@@ -98,7 +98,7 @@ public class RegisterController {
                 .members(event.getMembers()
                         .stream()
                         .map(m -> MemberDto.builder()
-                                .userName(m.getUserName())
+                                .username(m.getUserName())
                                 .freshBlood(m.isFreshBlood())
                                 .build()).collect(Collectors.toList()))
                 .build();

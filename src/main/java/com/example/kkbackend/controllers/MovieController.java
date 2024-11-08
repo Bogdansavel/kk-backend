@@ -7,6 +7,8 @@ import com.example.kkbackend.repositories.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -18,7 +20,12 @@ public class MovieController {
 
     @PostMapping
     public MovieDto postMovie(@RequestBody CreateMovieDto createMovieDto) {
-        return fromMovieToDto(movieRepository.save(Movie.builder().kinopoiskId(createMovieDto.kinopoiskId()).build()));
+        return fromMovieToDto(movieRepository.save(
+                Movie.builder()
+                        .kinopoiskId(createMovieDto.kinopoiskId())
+                        .name(createMovieDto.name())
+                        .ratings(new ArrayList<>())
+                        .build()));
     }
 
     @GetMapping("{id}")
@@ -33,6 +40,7 @@ public class MovieController {
                 .name(movie.getName())
                 .ratings(movie.getRatings().stream().map(RateController::fromRateToDto)
                         .collect(Collectors.toList()))
+                .photoName(movie.getPhotoName())
                 .build();
     }
 }

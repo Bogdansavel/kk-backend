@@ -1,3 +1,3 @@
 package com.example.kkbackend.dtos;
 
-public record CreateMovieDto(int kinopoiskId) {}
+public record CreateMovieDto(int kinopoiskId, String name) {}
