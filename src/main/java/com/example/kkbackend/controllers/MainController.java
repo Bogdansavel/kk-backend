@@ -90,16 +90,16 @@ public class MainController {
                             .freshBlood(true)
                             .build()));
         }
-        if (member.get().isFreshBlood() && !member.get().getEvents().isEmpty()) {
-            member.get().setFreshBlood(false);
-            member = Optional.of(memberRepository.save(member.get()));
-        }
         var event = eventRepository.getById(UUID.fromString(currentEvent));
         if (event.getMembers().contains(member.get())) {
             return RegisterResponseDto.builder().isAlreadyRegistered(true).build();
         }
         event.getMembers().add(member.get());
         member.get().getEvents().add(event);
+        if (member.get().isFreshBlood() && member.get().getEvents().size() > 1) {
+            member.get().setFreshBlood(false);
+            memberRepository.save(member.get());
+        }
         event = eventRepository.save(event);
 
         return RegisterResponseDto.builder()
