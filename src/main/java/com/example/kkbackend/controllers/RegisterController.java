@@ -2,6 +2,7 @@ package com.example.kkbackend.controllers;
 
 import com.example.kkbackend.dtos.*;
 import com.example.kkbackend.entities.Event;
+import com.example.kkbackend.mapper.MemberMapper;
 import com.example.kkbackend.repositories.EventRepository;
 import com.example.kkbackend.repositories.MemberRepository;
 import jakarta.transaction.Transactional;
@@ -30,10 +31,7 @@ public class RegisterController {
     public List<MemberDto> getMembers() {
         return eventRepository.getReferenceById(UUID.fromString(currentEvent)).getMembers()
                 .stream()
-                .map(member -> MemberDto.builder()
-                        .username(member.getUserName())
-                        .freshBlood(member.isFreshBlood())
-                        .build())
+                .map(MemberMapper::toDto)
                 .toList();
     }
 
@@ -42,12 +40,7 @@ public class RegisterController {
     public RegisterResponseDto register(@RequestBody RegisterDto registerDto) {
         var member = memberRepository.getMemberByUserName(registerDto.username());
         if (member.isEmpty()) {
-            member = Optional.of(memberRepository.save(
-                    Member.builder()
-                            .userName(registerDto.username())
-                            .events(new HashSet<>())
-                            .freshBlood(true)
-                            .build()));
+            member = Optional.of(memberRepository.save(MemberMapper.toModel(registerDto)));
         }
         var event = eventRepository.getReferenceById(UUID.fromString(currentEvent));
         if (event.getMembers().contains(member.get())) {

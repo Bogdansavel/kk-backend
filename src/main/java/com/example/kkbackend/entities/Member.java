@@ -21,6 +21,8 @@ public class Member {
     private String photoUrl;
     @Column(nullable = false)
     private boolean freshBlood;
+    @Column(nullable = false)
+    private String firstName;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

@@ -5,6 +5,7 @@ import com.example.kkbackend.dtos.EventDto;
 import com.example.kkbackend.dtos.MemberDto;
 import com.example.kkbackend.dtos.TelegramMessageDto;
 import com.example.kkbackend.entities.Event;
+import com.example.kkbackend.mapper.MemberMapper;
 import com.example.kkbackend.repositories.EventRepository;
 import com.example.kkbackend.repositories.MovieRepository;
 import lombok.RequiredArgsConstructor;
@@ -59,10 +60,7 @@ public class EventController {
                                 .build()).collect(Collectors.toList()))
                 .members(event.getMembers()
                         .stream()
-                        .map(m -> MemberDto.builder()
-                                .username(m.getUserName())
-                                .freshBlood(m.isFreshBlood())
-                                .build())
+                        .map(MemberMapper::toDto)
                         .collect(Collectors.toList())
                 )
                 .build();
