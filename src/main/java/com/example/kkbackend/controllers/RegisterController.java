@@ -38,9 +38,16 @@ public class RegisterController {
     @PostMapping("register")
     @Transactional
     public RegisterResponseDto register(@RequestBody RegisterDto registerDto) {
-        var member = memberRepository.getMemberByUserName(registerDto.username());
+        var member = memberRepository.getMemberByFirstName(registerDto.firstName());
         if (member.isEmpty()) {
-            member = Optional.of(memberRepository.save(MemberMapper.toModel(registerDto)));
+            member = memberRepository.getMemberByUserName(registerDto.username());
+            if (member.isEmpty()) {
+                member = Optional.of(memberRepository.save(MemberMapper.toModel(registerDto)));
+            } else {
+                var memberValue = member.get();
+                memberValue.setFirstName(registerDto.firstName());
+                member = Optional.of(memberRepository.save(memberValue));
+            }
         }
         var event = eventRepository.getReferenceById(UUID.fromString(currentEvent));
         if (event.getMembers().contains(member.get())) {
