@@ -97,10 +97,8 @@ public class RegisterController {
                                 .build()).collect(Collectors.toList()))
                 .members(event.getMembers()
                         .stream()
-                        .map(m -> MemberDto.builder()
-                                .username(m.getUserName())
-                                .freshBlood(m.isFreshBlood())
-                                .build()).collect(Collectors.toList()))
+                        .map(MemberMapper::toDto)
+                        .collect(Collectors.toList()))
                 .build();
     }
 }
