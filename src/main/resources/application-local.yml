@@ -1,9 +1,16 @@
 spring:
-  application.name: kkbackend
+  application:
+    name: kkbackend
   datasource:
-    url: jdbc:postgresql://localhost:5432/compose-postgres
-    username: compose-postgres
-    password: compose-postgres
+    url: jdbc:postgresql://dpg-csidkaij1k6c73ar9aig-a.frankfurt-postgres.render.com:5432/test
+    username: admin
+    password: NRNMRQyqgLjdW4pywTC3eJcyZO5zNrql
   jpa:
+    show-sql: true
     hibernate:
+      jdbc:
+        time_zone: UTC
       ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+current-event: 999e85aa-69e7-487d-b3db-5ae694f8b072

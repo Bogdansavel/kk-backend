@@ -1,6 +1,4 @@
 spring:
-  config:
-    import: "sm://"
   application:
     name: kkbackend
   datasource:
@@ -14,9 +12,5 @@ spring:
         time_zone: UTC
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-  cloud:
-    gcp:
-      sql:
-        enabled: false
 
 current-event: 5c14bcb8-70a6-4afb-a846-d8e4c8ca92b8
