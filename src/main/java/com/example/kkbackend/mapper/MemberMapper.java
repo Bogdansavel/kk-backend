@@ -14,6 +14,7 @@ import java.util.Set;
 public class MemberMapper {
     public static MemberDto toDto(Member member) {
         return MemberDto.builder()
+                .telegramId(member.getTelegramId())
                 .username(member.getUserName())
                 .firstName(member.getFirstName())
                 .freshBlood(member.isFreshBlood())
@@ -22,6 +23,7 @@ public class MemberMapper {
 
     public static Member toModel(MemberDto memberDto, Set<Event> events, List<Rate> ratings) {
         return Member.builder()
+                .telegramId(memberDto.telegramId())
                 .userName(memberDto.username())
                 .firstName(memberDto.firstName())
                 .freshBlood(memberDto.freshBlood())
@@ -30,10 +32,11 @@ public class MemberMapper {
                 .build();
     }
 
-    public static Member toModel(RegisterDto memberDto) {
+    public static Member toModel(RegisterDto registerDto) {
         return Member.builder()
-                .userName(memberDto.username())
-                .firstName(memberDto.firstName())
+                .telegramId(registerDto.telegramId())
+                .userName(registerDto.username())
+                .firstName(registerDto.firstName())
                 .freshBlood(true)
                 .events(new HashSet<>())
                 .ratings(new LinkedList<>())

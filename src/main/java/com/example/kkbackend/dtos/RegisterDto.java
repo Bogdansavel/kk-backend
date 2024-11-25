@@ -1,4 +1,4 @@
 package com.example.kkbackend.dtos;
 
-public record RegisterDto (String username, String firstName) {
+public record RegisterDto (int telegramId, String username, String firstName) {
 }

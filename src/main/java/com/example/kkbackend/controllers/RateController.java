@@ -33,19 +33,18 @@ public class RateController {
     @PostMapping
     public RateDto postRate(@RequestBody RateDto rateDto) {
         var movie = movieRepository.getReferenceById(UUID.fromString(rateDto.movieId()));
-        Member member;
-        try {
-            member = memberService.getMemberByUsername(rateDto.username());
-        } catch (EntityNotFoundException ex) {
-            var optionalMember = memberRepository.getMemberByFirstName(rateDto.firstName());
-            member = optionalMember.orElseGet(() -> memberRepository.save(MemberMapper.toModel(
-                    MemberDto.builder()
-                            .firstName(rateDto.firstName())
-                            .username(rateDto.username())
-                            .freshBlood(true)
-                            .build(),
-                    new HashSet<>(), new ArrayList<>())));
-        }
+        var member = memberRepository.getMemberByTelegramIdOrUserNameOrFirstName(
+                rateDto.telegramId(), rateDto.username(), rateDto.firstName()).
+                orElse(
+                memberRepository.save(MemberMapper.toModel(
+                        MemberDto.builder()
+                                .telegramId(rateDto.telegramId())
+                                .firstName(rateDto.firstName())
+                                .username(rateDto.username())
+                                .freshBlood(true)
+                                .build(),
+                        new HashSet<>(), new ArrayList<>()))
+        );
         return fromRateToDto(
                 rateRepository.save(
                     Rate.builder()
