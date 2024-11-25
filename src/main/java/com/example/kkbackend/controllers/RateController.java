@@ -33,9 +33,8 @@ public class RateController {
     @PostMapping
     public RateDto postRate(@RequestBody RateDto rateDto) {
         var movie = movieRepository.getReferenceById(UUID.fromString(rateDto.movieId()));
-        var member = memberRepository.getMemberByTelegramIdOrUserNameOrFirstName(
-                rateDto.telegramId(), rateDto.username(), rateDto.firstName()).
-                orElse(
+        var member = memberRepository.getMemberByUserName(rateDto.username())
+                .orElse(
                 memberRepository.save(MemberMapper.toModel(
                         MemberDto.builder()
                                 .telegramId(rateDto.telegramId())
