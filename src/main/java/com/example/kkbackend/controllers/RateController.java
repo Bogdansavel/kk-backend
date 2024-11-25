@@ -5,6 +5,7 @@ import com.example.kkbackend.dtos.RateDto;
 import com.example.kkbackend.entities.Member;
 import com.example.kkbackend.entities.Movie;
 import com.example.kkbackend.entities.Rate;
+import com.example.kkbackend.mapper.MemberMapper;
 import com.example.kkbackend.repositories.MemberRepository;
 import com.example.kkbackend.repositories.MovieRepository;
 import com.example.kkbackend.repositories.RateRepository;
@@ -14,6 +15,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.UUID;
 
 @RestController
@@ -31,12 +34,11 @@ public class RateController {
         var movie = movieRepository.getReferenceById(UUID.fromString(rateDto.movieId()));
         Member member;
         try {
-            member = memberService.getMemberByUsername(rateDto.username());
+            member = memberService.getMemberByUsername(rateDto.memberDto().username());
         } catch (EntityNotFoundException ex) {
-            member = memberRepository.save(Member.builder()
-                    .freshBlood(true)
-                    .userName(rateDto.username())
-                    .build());
+            var optionalMember = memberRepository.getMemberByFirstName(rateDto.memberDto().firstName());
+            member = optionalMember.orElseGet(() -> memberRepository.save(MemberMapper.toModel(rateDto.memberDto(),
+                    new HashSet<>(), new ArrayList<>())));
         }
         return fromRateToDto(
                 rateRepository.save(
@@ -53,7 +55,7 @@ public class RateController {
     @PutMapping
     public RateDto putRate(@RequestBody RateDto rateDto) {
         var movie = movieRepository.getReferenceById(UUID.fromString(rateDto.movieId()));
-        var member = memberService.getMemberByUsername(rateDto.username());
+        var member = memberService.getMemberByUsername(rateDto.memberDto().username());
         var rate = rateRepository.getReferenceById(UUID.fromString(rateDto.id()));
         return fromRateToDto(rateRepository.save(fromDtoToRate(rateDto, member, movie)));
     }
@@ -87,7 +89,7 @@ public class RateController {
                 .rating(rate.getRating())
                 .liked(rate.isLiked())
                 .discussable(rate.isDiscussable())
-                .username(rate.getMember().getUserName())
+                .memberDto(MemberMapper.toDto(rate.getMember()))
                 .movieId(rate.getMovie().getId().toString())
                 .build();
     }
