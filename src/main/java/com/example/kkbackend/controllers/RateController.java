@@ -97,6 +97,7 @@ public class RateController {
                 .username(rate.getMember().getUserName())
                 .firstName(rate.getMember().getFirstName())
                 .movieId(rate.getMovie().getId().toString())
+                .telegramId(rate.getMember().getTelegramId())
                 .build();
     }
 
