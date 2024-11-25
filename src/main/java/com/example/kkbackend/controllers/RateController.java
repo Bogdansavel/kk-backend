@@ -34,8 +34,8 @@ public class RateController {
     public RateDto postRate(@RequestBody RateDto rateDto) {
         var movie = movieRepository.getReferenceById(UUID.fromString(rateDto.movieId()));
         var member = memberRepository.getMemberByUserName(rateDto.username())
-                .orElse(
-                memberRepository.save(MemberMapper.toModel(
+                .orElseGet(() ->
+                    memberRepository.save(MemberMapper.toModel(
                         MemberDto.builder()
                                 .telegramId(rateDto.telegramId())
                                 .firstName(rateDto.firstName())
@@ -43,7 +43,7 @@ public class RateController {
                                 .freshBlood(true)
                                 .build(),
                         new HashSet<>(), new ArrayList<>()))
-        );
+                );
         return fromRateToDto(
                 rateRepository.save(
                     Rate.builder()
