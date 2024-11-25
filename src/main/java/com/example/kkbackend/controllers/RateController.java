@@ -1,6 +1,7 @@
 package com.example.kkbackend.controllers;
 
 import com.example.kkbackend.dtos.AverageRateDto;
+import com.example.kkbackend.dtos.MemberDto;
 import com.example.kkbackend.dtos.RateDto;
 import com.example.kkbackend.entities.Member;
 import com.example.kkbackend.entities.Movie;
@@ -34,10 +35,15 @@ public class RateController {
         var movie = movieRepository.getReferenceById(UUID.fromString(rateDto.movieId()));
         Member member;
         try {
-            member = memberService.getMemberByUsername(rateDto.memberDto().username());
+            member = memberService.getMemberByUsername(rateDto.username());
         } catch (EntityNotFoundException ex) {
-            var optionalMember = memberRepository.getMemberByFirstName(rateDto.memberDto().firstName());
-            member = optionalMember.orElseGet(() -> memberRepository.save(MemberMapper.toModel(rateDto.memberDto(),
+            var optionalMember = memberRepository.getMemberByFirstName(rateDto.firstName());
+            member = optionalMember.orElseGet(() -> memberRepository.save(MemberMapper.toModel(
+                    MemberDto.builder()
+                            .firstName(rateDto.firstName())
+                            .username(rateDto.username())
+                            .freshBlood(true)
+                            .build(),
                     new HashSet<>(), new ArrayList<>())));
         }
         return fromRateToDto(
@@ -55,7 +61,7 @@ public class RateController {
     @PutMapping
     public RateDto putRate(@RequestBody RateDto rateDto) {
         var movie = movieRepository.getReferenceById(UUID.fromString(rateDto.movieId()));
-        var member = memberService.getMemberByUsername(rateDto.memberDto().username());
+        var member = memberService.getMemberByUsername(rateDto.username());
         var rate = rateRepository.getReferenceById(UUID.fromString(rateDto.id()));
         return fromRateToDto(rateRepository.save(fromDtoToRate(rateDto, member, movie)));
     }
@@ -89,7 +95,8 @@ public class RateController {
                 .rating(rate.getRating())
                 .liked(rate.isLiked())
                 .discussable(rate.isDiscussable())
-                .memberDto(MemberMapper.toDto(rate.getMember()))
+                .username(rate.getMember().getUserName())
+                .firstName(rate.getMember().getFirstName())
                 .movieId(rate.getMovie().getId().toString())
                 .build();
     }
