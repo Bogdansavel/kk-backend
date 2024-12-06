@@ -46,14 +46,30 @@ public class RateController {
                 );
         return fromRateToDto(
                 rateRepository.save(
-                    Rate.builder()
-                            .rating(rateDto.rating())
-                            .liked(rateDto.liked())
-                            .discussable(rateDto.discussable())
-                            .movie(movie)
-                            .member(member)
-                            .build()
-        ));
+                        Rate.builder()
+                                .rating(rateDto.rating())
+                                .liked(rateDto.liked())
+                                .discussable(rateDto.discussable())
+                                .movie(movie)
+                                .member(member)
+                                .build()
+                ));
+    }
+
+    @RequestMapping("/delete")
+    @PostMapping
+    public boolean deleteRate(@RequestParam String rateId) {
+        try{
+            UUID uuid = UUID.fromString(rateId);
+            if (rateRepository.existsById(uuid)) {
+                rateRepository.deleteById(uuid);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     @PutMapping
