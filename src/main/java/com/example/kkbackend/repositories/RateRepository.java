@@ -12,5 +12,4 @@ import java.util.UUID;
 @Repository
 public interface RateRepository extends JpaRepository<Rate, UUID> {
     Optional<Rate> getRateByMovieAndMember(Movie movie, Member member);
-    void deleteById(UUID uuid);
 }
