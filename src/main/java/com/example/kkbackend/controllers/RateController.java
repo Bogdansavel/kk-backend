@@ -56,11 +56,11 @@ public class RateController {
                 ));
     }
 
-    @RequestMapping("/delete")
+    @RequestMapping("/delete/{id}")
     @PostMapping
-    public boolean deleteRate(@RequestParam String rateId) {
+    public boolean deleteRate(@PathVariable String id) {
         try{
-            UUID uuid = UUID.fromString(rateId);
+            UUID uuid = UUID.fromString(id);
             if (rateRepository.existsById(uuid)) {
                 rateRepository.deleteById(uuid);
                 return true;
