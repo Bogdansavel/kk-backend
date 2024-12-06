@@ -56,7 +56,7 @@ public class RateController {
                 ));
     }
 
-    @RequestMapping("/delete/{id}")
+    @RequestMapping("/{id}")
     @DeleteMapping
     public boolean deleteRate(@PathVariable String id) {
         try{
