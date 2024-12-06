@@ -57,7 +57,7 @@ public class RateController {
     }
 
     @RequestMapping("/delete/{id}")
-    @PostMapping
+    @DeleteMapping
     public boolean deleteRate(@PathVariable String id) {
         try{
             UUID uuid = UUID.fromString(id);
