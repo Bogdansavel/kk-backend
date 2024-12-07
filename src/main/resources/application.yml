@@ -13,4 +13,4 @@ spring:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
-current-event: 9ad8f2e5-8ce9-438b-a853-20424b20da62
+current-event: d865698d-c496-4160-88bc-b607cfa91389
