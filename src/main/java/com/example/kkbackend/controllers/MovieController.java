@@ -42,6 +42,7 @@ public class MovieController {
                         .collect(Collectors.toList()))
                 .photoName(movie.getPhotoName())
                 .posterUrl(movie.getPosterUrl())
+                .averageRating(movie.averageRating())
                 .build();
     }
 }

@@ -26,4 +26,11 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie")
     private List<Rate> ratings = new ArrayList<>();
+
+    public int averageRating() {
+        if (ratings.isEmpty()) {
+            return 0;
+        }
+        return ratings.stream().map(Rate::getRating).mapToInt(Integer::intValue).sum() / ratings.size();
+    }
 }
