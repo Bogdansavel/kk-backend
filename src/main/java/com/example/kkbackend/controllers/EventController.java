@@ -1,9 +1,6 @@
 package com.example.kkbackend.controllers;
 
-import com.example.kkbackend.dtos.CreateEventDto;
-import com.example.kkbackend.dtos.EventDto;
-import com.example.kkbackend.dtos.MemberDto;
-import com.example.kkbackend.dtos.TelegramMessageDto;
+import com.example.kkbackend.dtos.*;
 import com.example.kkbackend.entities.Event;
 import com.example.kkbackend.mapper.MemberMapper;
 import com.example.kkbackend.repositories.EventRepository;
@@ -14,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -45,6 +43,18 @@ public class EventController {
     public EventDto getEvent() {
         var event = eventRepository.getById(UUID.fromString(currentEvent));
         return fromEventToDto(event);
+    }
+
+    @GetMapping("/movies")
+    public List<EventMovieDto> getAllEventsWithMoviesInfo() {
+        return eventRepository.findAll().stream().map(e ->
+                EventMovieDto.builder()
+                        .movie(MovieController.fromMovieToDto(e.getMovie()))
+                        .language(e.getLanguage())
+                        .date(e.getDate().toString())
+                        .members(e.getMembers().stream().map(MemberMapper::toDto).toList())
+                        .build()
+        ).toList();
     }
 
     private EventDto fromEventToDto(Event event) {
