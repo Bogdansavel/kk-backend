@@ -41,6 +41,7 @@ public class MovieController {
                 .ratings(movie.getRatings().stream().map(RateController::fromRateToDto)
                         .collect(Collectors.toList()))
                 .photoName(movie.getPhotoName())
+                .posterUrl(movie.getPosterUrl())
                 .build();
     }
 }

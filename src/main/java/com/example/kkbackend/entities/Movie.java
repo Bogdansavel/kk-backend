@@ -22,6 +22,7 @@ public class Movie {
     private int kinopoiskId;
     private String name;
     private String photoName;
+    private String posterUrl;
 
     @OneToMany(mappedBy = "movie")
     private List<Rate> ratings = new ArrayList<>();
