@@ -47,7 +47,7 @@ public class EventController {
 
     @GetMapping("/movies")
     public List<EventMovieDto> getAllEventsWithMoviesInfo() {
-        return eventRepository.findAll().stream().map(e ->
+        return eventRepository.getAllWithMovies().stream().map(e ->
                 EventMovieDto.builder()
                         .movie(MovieController.fromMovieToDto(e.getMovie()))
                         .language(e.getLanguage())
