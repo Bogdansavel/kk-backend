@@ -5,9 +5,30 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.*;
 
+@NamedEntityGraph(
+        name = "event-entity-graph-with-movies",
+        attributeNodes = {
+                @NamedAttributeNode(value = "movie", subgraph = "movie-subgraph"),
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "movie-subgraph",
+                        attributeNodes = {
+                                @NamedAttributeNode(value = "ratings", subgraph = "member-subgraph")
+                        }
+                ),
+                @NamedSubgraph(
+                        name = "member-subgraph",
+                        attributeNodes = {
+                                @NamedAttributeNode("member")
+                        }
+                )
+        }
+)
 @Entity
 @Data
 @NoArgsConstructor
@@ -18,7 +39,7 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "movie_id", referencedColumnName = "id")
     private Movie movie;
     private String language;

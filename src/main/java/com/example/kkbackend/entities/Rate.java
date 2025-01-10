@@ -24,7 +24,7 @@ public class Rate {
     @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 }
