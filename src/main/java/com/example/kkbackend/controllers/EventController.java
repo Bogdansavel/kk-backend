@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -47,13 +44,18 @@ public class EventController {
 
     @GetMapping("/movies")
     public List<EventMovieDto> getAllEventsWithMoviesInfo() {
-        return eventRepository.findAll().stream().map(e ->
-                EventMovieDto.builder()
+        return eventRepository.findAll().stream()
+                //remove 2 years anniversary party event
+                .filter(e -> !Objects.equals(e.getMovie().getId().toString(),
+                        "f8de891e-0aa6-44fb-8f13-4dfe23440248")
+                )
+                .map(e ->
+                    EventMovieDto.builder()
                         .movie(MovieController.fromMovieToDto(e.getMovie()))
                         .language(e.getLanguage())
                         .date(e.getDate().toString())
                         .build()
-        ).toList();
+                ).toList();
     }
 
     private EventDto fromEventToDto(Event event) {
