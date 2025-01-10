@@ -46,8 +46,8 @@ public class EventController {
     public List<EventMovieDto> getAllEventsWithMoviesInfo() {
         return eventRepository.findAll().stream()
                 //remove 2 years anniversary party event
-                .filter(e -> !Objects.equals(e.getMovie().getId().toString(),
-                        "f8de891e-0aa6-44fb-8f13-4dfe23440248")
+                .filter(e -> !Objects.equals(e.getDate().toString(),
+                        "2025-01-12")
                 )
                 .map(e ->
                     EventMovieDto.builder()
