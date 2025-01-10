@@ -18,7 +18,7 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "movie_id", referencedColumnName = "id")
     private Movie movie;
     private String language;

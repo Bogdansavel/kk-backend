@@ -10,9 +10,4 @@ import java.util.UUID;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, UUID> {
-    @Query("SELECT event FROM Event event " +
-            "JOIN FETCH event.movie movie " +
-            "JOIN FETCH movie.ratings ratings " +
-            "JOIN FETCH event.members members")
-    List<Event> getAllWithMovies();
 }

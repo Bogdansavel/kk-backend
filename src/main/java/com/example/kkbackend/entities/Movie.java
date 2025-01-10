@@ -24,7 +24,7 @@ public class Movie {
     private String photoName;
     private String posterUrl;
 
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", fetch = FetchType.EAGER)
     private List<Rate> ratings = new ArrayList<>();
 
     public int averageRating() {
