@@ -25,6 +25,7 @@ public class MovieController {
                         .kinopoiskId(createMovieDto.kinopoiskId())
                         .name(createMovieDto.name())
                         .ratings(new ArrayList<>())
+                        .posterUrl(createMovieDto.posterUrl())
                         .build()));
     }
 
