@@ -46,7 +46,7 @@ public class MovieController {
                 .photoName(movie.getPhotoName())
                 .posterUrl(movie.getPosterUrl())
                 .averageRating(movie.averageRating())
-                .memberDto(MemberMapper.toDto(movie.getMember()))
+                .member(MemberMapper.toDto(movie.getMember()))
                 .build();
     }
 
