@@ -5,6 +5,7 @@ import com.example.kkbackend.entities.Event;
 import com.example.kkbackend.mapper.MemberMapper;
 import com.example.kkbackend.repositories.EventRepository;
 import com.example.kkbackend.repositories.MemberRepository;
+import com.example.kkbackend.service.MemberService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -15,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.*;
 import java.util.stream.Collectors;
-import com.example.kkbackend.entities.Member;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class RegisterController {
+    private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final EventRepository eventRepository;
 
@@ -38,17 +39,11 @@ public class RegisterController {
     @PostMapping("register")
     @Transactional
     public RegisterResponseDto register(@RequestBody RegisterDto registerDto) {
-        var member = memberRepository.getMemberByFirstName(registerDto.firstName());
-        if (member.isEmpty()) {
-            member = memberRepository.getMemberByUserName(registerDto.username());
-            if (member.isEmpty()) {
-                member = Optional.of(memberRepository.save(MemberMapper.toModel(registerDto)));
-            } else {
-                var memberValue = member.get();
-                memberValue.setFirstName(registerDto.firstName());
-                member = Optional.of(memberRepository.save(memberValue));
-            }
-        }
+        var member = memberService.getMemberByTelegramIdOrFirstNameOrUsername(
+                registerDto.telegramId(), registerDto.firstName(), registerDto.username());
+        member = member.map(memberRepository::save)
+                .or(() -> Optional.of(memberRepository.save(MemberMapper.toModel(registerDto))));
+
         var event = eventRepository.getReferenceById(UUID.fromString(currentEvent));
         if (event.getMembers().contains(member.get())) {
             return RegisterResponseDto.builder().isAlreadyRegistered(true).build();
@@ -65,14 +60,12 @@ public class RegisterController {
     @PostMapping("unregister")
     @Transactional
     public RegisterResponseDto unregister(@RequestBody RegisterDto registerDto) {
-        var member = memberRepository.getMemberByUserName(registerDto.username());
+        var member = memberService.getMemberByTelegramIdOrFirstNameOrUsername(
+                registerDto.telegramId(), registerDto.firstName(), registerDto.username());
         if (member.isEmpty()) {
-            member = Optional.of(memberRepository.save(
-                    Member.builder()
-                            .userName(registerDto.username())
-                            .events(new HashSet<>())
-                            .build()));
+            member = Optional.of(MemberMapper.toModel(registerDto));
         }
+
         var event = eventRepository.getReferenceById(UUID.fromString(currentEvent));
 
         if (!event.getMembers().contains(member.get())) {

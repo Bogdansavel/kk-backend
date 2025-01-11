@@ -18,4 +18,15 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         MessageFormat.format("Member with username {0} is not existed!", username)));
     }
+
+    public Optional<Member> getMemberByTelegramIdOrFirstNameOrUsername(int telegramId, String firstName, String username) {
+        var member = memberRepository.getMemberByTelegramId(telegramId);
+        if (member.isEmpty()) {
+            member = memberRepository.getMemberByFirstName(firstName);
+            if (member.isEmpty()) {
+                member = memberRepository.getMemberByUserName(username);
+            }
+        }
+        return member;
+    }
 }
