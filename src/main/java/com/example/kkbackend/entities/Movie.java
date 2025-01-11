@@ -23,6 +23,11 @@ public class Movie {
     private String name;
     private String photoName;
     private String posterUrl;
+    private String kinopoiskData;
+
+    @ManyToOne
+    @JoinColumn(name="member_id")
+    private Member member;
 
     @OneToMany(mappedBy = "movie")
     private List<Rate> ratings = new ArrayList<>();

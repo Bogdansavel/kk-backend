@@ -14,3 +14,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 current-event: f8de891e-0aa6-44fb-8f13-4dfe23440248
+
+kinopoisk-db:
+  url: https://api.kinopoisk.dev/v1.4/
+  token: E8EEGCE-EYF48XG-QN2MASG-GPS29F3

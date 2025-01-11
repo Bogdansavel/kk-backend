@@ -35,4 +35,7 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<Rate> ratings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private Set<Movie> movie = new HashSet<>();
 }

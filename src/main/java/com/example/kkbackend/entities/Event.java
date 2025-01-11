@@ -18,7 +18,8 @@ import java.util.*;
                 @NamedSubgraph(
                         name = "movie-subgraph",
                         attributeNodes = {
-                                @NamedAttributeNode(value = "ratings", subgraph = "member-subgraph")
+                                @NamedAttributeNode(value = "ratings", subgraph = "member-subgraph"),
+                                @NamedAttributeNode("member")
                         }
                 ),
                 @NamedSubgraph(

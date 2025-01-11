@@ -1,8 +1,10 @@
 package com.example.kkbackend.controllers;
 
 import com.example.kkbackend.dtos.MovieDto;
+import com.example.kkbackend.dtos.MovieWithKinopoiskDataDto;
 import com.example.kkbackend.entities.Movie;
 import com.example.kkbackend.dtos.CreateMovieDto;
+import com.example.kkbackend.mapper.MemberMapper;
 import com.example.kkbackend.repositories.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +46,21 @@ public class MovieController {
                 .photoName(movie.getPhotoName())
                 .posterUrl(movie.getPosterUrl())
                 .averageRating(movie.averageRating())
+                .memberDto(MemberMapper.toDto(movie.getMember()))
+                .build();
+    }
+
+    public static MovieWithKinopoiskDataDto fromMovieToWithKinopoiskDataDto(Movie movie) {
+        return MovieWithKinopoiskDataDto.builder()
+                .id(movie.getId().toString())
+                .kinopoiskId(movie.getKinopoiskId())
+                .name(movie.getName())
+                .ratings(movie.getRatings().stream().map(RateController::fromRateToDto)
+                        .collect(Collectors.toList()))
+                .photoName(movie.getPhotoName())
+                .posterUrl(movie.getPosterUrl())
+                .averageRating(movie.averageRating())
+                .kinopoiskData(movie.getKinopoiskData())
                 .build();
     }
 }
