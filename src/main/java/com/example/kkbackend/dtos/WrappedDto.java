@@ -8,17 +8,31 @@ import java.util.List;
 import java.util.Map;
 
 public record WrappedDto (
+        long eventsCount,
+        String firstEvent,
+        long visitedEventsCount,
+        int topVisitorsPlace,
+        List<Map.Entry<MemberDto, Integer>> topVisitors,
+        int streak,
+        int topStreaksPlace,
+        List<Map.Entry<MemberDto, Integer>> topStreaks,
+        long eventYouMissedCount,
+        int offeredByYou,
+        List<Map.Entry<MemberDto, Integer>> topOffers,
         int allEventsTime,
         int allMoviesTime,
         int moviesCount,
-        long moviesRated,
+        long moviesRatedCount,
+        int movieRatedPlace,
+        List<Map.Entry<MemberDto, Long>> topRates,
         List<MovieDto> topMovies,
+        List<MovieDto> worstMovies,
         List<Map.Entry<String, Integer>> topGenres,
         List<Map.Entry<String, Integer>> countries,
         long actorsCount,
         List<Map.Entry<KPPerson, Integer>> topPersons,
         List<MovieDto> topArtistMovies,
-        long directorsCount,
-        List<Map.Entry<KPPerson, Integer>> topDirectors
+        KinopoiskData oldestMovie,
+        KinopoiskData newestMovie
 ) {
 }

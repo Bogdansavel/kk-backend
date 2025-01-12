@@ -2,10 +2,12 @@ package com.example.kkbackend.controllers;
 
 import com.example.kkbackend.dtos.*;
 import com.example.kkbackend.entities.Event;
+import com.example.kkbackend.entities.Member;
 import com.example.kkbackend.mapper.MemberMapper;
 import com.example.kkbackend.repositories.EventRepository;
 import com.example.kkbackend.repositories.MemberRepository;
 import com.example.kkbackend.service.MemberService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -76,6 +80,23 @@ public class RegisterController {
         event.getMembers().remove(member.get());
         member.get().getEvents().remove(event);
         return registerResponseDtoFromEvent(eventRepository.save(event));
+    }
+
+    @PostMapping("/register/batch")
+    public EventDto registerBatch(@RequestBody RegisterBatchDto registerBatchDto) {
+        var eventOptional = eventRepository.findById(UUID.fromString(registerBatchDto.eventId()));
+        if (eventOptional.isEmpty()) {
+            throw new EntityNotFoundException(
+                    MessageFormat.format("Event with id {0} dosen't exist!", registerBatchDto.eventId()));
+        }
+        for (var username : registerBatchDto.usernames()) {
+            var memberOptional = memberRepository.getMemberByUserName(username);
+            if (memberOptional.isPresent()) {
+                eventOptional.get().getMembers().add(memberOptional.get());
+                memberOptional.get().getEvents().add(eventOptional.get());
+            }
+        }
+        return EventController.fromEventToDto(eventRepository.save(eventOptional.get()));
     }
 
     private RegisterResponseDto registerResponseDtoFromEvent(Event event) {

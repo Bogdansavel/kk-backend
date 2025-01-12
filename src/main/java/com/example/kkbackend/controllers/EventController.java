@@ -58,7 +58,7 @@ public class EventController {
                 ).toList();
     }
 
-    private EventDto fromEventToDto(Event event) {
+    public static EventDto fromEventToDto(Event event) {
         return EventDto.builder()
                 .movieId(event.getMovie().getId().toString())
                 .language(event.getLanguage())
