@@ -20,13 +20,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     public Optional<Member> getMemberByTelegramIdOrFirstNameOrUsername(int telegramId, String firstName, String username) {
-        var member = memberRepository.getMemberByTelegramId(telegramId);
-        if (member.isEmpty()) {
-            member = memberRepository.getMemberByFirstName(firstName);
+        //var member = memberRepository.getMemberByTelegramId(telegramId);
+        //if (member.isEmpty()) {
+            var member = memberRepository.getMemberByFirstName(firstName);
             if (member.isEmpty()) {
                 member = memberRepository.getMemberByUserName(username);
             }
-        }
+        //}
         return member;
     }
 }

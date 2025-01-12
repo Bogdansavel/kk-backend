@@ -1,9 +1,7 @@
 package com.example.kkbackend.controllers;
 
 import com.example.kkbackend.client.KinopoiskDbClient;
-import com.example.kkbackend.dtos.MemberDto;
-import com.example.kkbackend.dtos.MovieWithKinopoiskDataDto;
-import com.example.kkbackend.dtos.WrappedDto;
+import com.example.kkbackend.dtos.*;
 import com.example.kkbackend.dtos.kinopoiskData.KPCountry;
 import com.example.kkbackend.dtos.kinopoiskData.KPGenre;
 import com.example.kkbackend.dtos.kinopoiskData.KPPerson;
@@ -115,7 +113,7 @@ public class WrappedController {
             persons.merge(person, 1, Integer::sum);
         });
         var topPersons = persons.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).limit(5).toList();
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).limit(3).toList();
 
         var topArtiestMovies = moviesData.stream()
                 .filter(
@@ -207,15 +205,15 @@ public class WrappedController {
                 yourEventsDates.get(0).toString(),
                 yourEventsDates.size(),
                 topVisitorsPlace,
-                topVisits.stream().limit(3).toList(),
+                topVisits.stream().limit(3).map(e -> new MemberDtoEntry(e.getKey(), e.getValue())).toList(),
                 streak,
                 topStreaksPlace,
-                topStreaks.stream().limit(3).toList(),
+                topStreaks.stream().limit(3).map(e -> new MemberDtoEntry(e.getKey(), e.getValue())).toList(),
                 eventsYouMissed.size(),
                 offers.get(memberOptional.get()),
-                topOffers.limit(5).map(entry ->
+                topOffers.limit(6).map(entry ->
                         Map.entry(MemberMapper.toDto(entry.getKey()), entry.getValue())
-                ).toList(),
+                ).map(e -> new MemberDtoEntry(e.getKey(), e.getValue())).toList(),
                 movies.size() * 5,
                 moviesData.stream().map(KinopoiskData::movieLength).mapToInt(Integer::intValue).sum(),
                 movies.size(),
@@ -223,15 +221,15 @@ public class WrappedController {
                         .anyMatch(id -> memberOptional.get().getId().equals(id))).count(),
                 topRatesPlace,
                 topRates.stream().map(entry ->
-                        Map.entry(MemberMapper.toDto(entry.getKey()), entry.getValue())
-                ).limit(3).toList(),
+                        Map.entry(MemberMapper.toDto(entry.getKey()), entry.getValue().intValue())
+                ).limit(3).map(e -> new MemberDtoEntry(e.getKey(), e.getValue())).toList(),
                 topMovies.stream().limit(3).map(MovieController::fromMovieToDto).toList(),
                 worstMovies.stream().limit(3).map(MovieController::fromMovieToDto).toList(),
-                topGenres.limit(5).toList(),
-                topCountries.toList(),
+                topGenres.limit(5).map(e -> new StringEntry(e.getKey(), e.getValue())).toList(),
+                topCountries.map(e -> new StringEntry(e.getKey(), e.getValue())).toList(),
                 moviesData.stream().map(KinopoiskData::persons).flatMap(Set::stream)
                         .filter(person -> person.profession().equals("актеры")).map(KPPerson::id).distinct().count(),
-                topPersons,
+                topPersons.stream().map(e -> new KPPersonEntry(e.getKey(), e.getValue())).toList(),
                 movies.stream().filter(m -> topArtiestMovies.contains(m.getKinopoiskId()))
                         .map(MovieController::fromMovieToDto).toList(),
                 years.get(0),
