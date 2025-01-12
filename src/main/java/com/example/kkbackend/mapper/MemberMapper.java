@@ -13,6 +13,7 @@ import java.util.Set;
 
 public class MemberMapper {
     public static MemberDto toDto(Member member) {
+        if (member == null) return null;
         return MemberDto.builder()
                 .telegramId(member.getTelegramId())
                 .username(member.getUserName())
