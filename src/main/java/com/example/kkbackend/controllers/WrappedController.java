@@ -76,7 +76,7 @@ public class WrappedController {
                             telegramId, userName, firstName));
         }
 
-        var movies = movieRepository.findAll();
+        var movies = movieRepository.findAll().stream().filter(m -> m.getKinopoiskId() != 0).toList();
         var topMovies = movies.stream().sorted(Comparator.comparingInt(Movie::averageRating).reversed()).toList();
         var worstMovies = movies.stream().sorted(Comparator.comparingInt(Movie::averageRating)).toList();
 
