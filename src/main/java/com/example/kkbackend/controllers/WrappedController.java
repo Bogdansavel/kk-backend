@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.MessageFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/wrapped")
@@ -92,13 +91,6 @@ public class WrappedController {
                     }
                 }).toList();
 
-        var genres = new HashMap<String, Integer>();
-        moviesData.stream().map(KinopoiskData::genres).flatMap(Set::stream).map(KPGenre::name).forEach(genre -> {
-            genres.merge(genre, 1, Integer::sum);
-        });
-        var  topGenres =  genres.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()));
-
         var countries = new HashMap<String, Integer>();
         moviesData.stream().map(KinopoiskData::countries).flatMap(Set::stream).map(KPCountry::name).forEach(country -> {
             countries.merge(country, 1, Integer::sum);
@@ -127,6 +119,7 @@ public class WrappedController {
                 .forEach(member -> offers.merge(member, 1, Integer::sum));
         var topOffers = offers.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+        var offersCount = Optional.ofNullable(offers.get(memberOptional.get())).orElse(0);
 
         var ratesPlaces = new HashMap<Member, Long>();
         movies.stream().map(Movie::getRatings).flatMap(List::stream).map(Rate::getMember).distinct().forEach(m ->{
@@ -202,7 +195,7 @@ public class WrappedController {
 
         return new WrappedDto(
                 events.size(),
-                yourEventsDates.get(0).toString(),
+                getFirstVisitedEventDate(yourEventsDates),
                 yourEventsDates.size(),
                 topVisitorsPlace,
                 topVisits.stream().limit(3).map(e -> new MemberDtoEntry(e.getKey(), e.getValue())).toList(),
@@ -210,7 +203,7 @@ public class WrappedController {
                 topStreaksPlace,
                 topStreaks.stream().limit(3).map(e -> new MemberDtoEntry(e.getKey(), e.getValue())).toList(),
                 eventsYouMissed.size(),
-                offers.get(memberOptional.get()),
+                offersCount,
                 topOffers.limit(6).map(entry ->
                         Map.entry(MemberMapper.toDto(entry.getKey()), entry.getValue())
                 ).map(e -> new MemberDtoEntry(e.getKey(), e.getValue())).toList(),
@@ -225,7 +218,7 @@ public class WrappedController {
                 ).limit(3).map(e -> new MemberDtoEntry(e.getKey(), e.getValue())).toList(),
                 topMovies.stream().limit(3).map(MovieController::fromMovieToDto).toList(),
                 worstMovies.stream().limit(3).map(MovieController::fromMovieToDto).toList(),
-                topGenres.limit(5).map(e -> new StringEntry(e.getKey(), e.getValue())).toList(),
+                calculateGenres(moviesData),
                 topCountries.map(e -> new StringEntry(e.getKey(), e.getValue())).toList(),
                 moviesData.stream().map(KinopoiskData::persons).flatMap(Set::stream)
                         .filter(person -> person.profession().equals("актеры")).map(KPPerson::id).distinct().count(),
@@ -235,5 +228,19 @@ public class WrappedController {
                 years.get(0),
                 years.get(years.size()-1)
         );
+    }
+
+    private List<StringEntry> calculateGenres(List<KinopoiskData> moviesData) {
+        var genres = new HashMap<String, Integer>();
+        moviesData.stream().map(KinopoiskData::genres).flatMap(Set::stream).map(KPGenre::name).forEach(genre -> {
+            genres.merge(genre, 1, Integer::sum);
+        });
+       return genres.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                        .limit(5).map(e -> new StringEntry(e.getKey(), e.getValue())).toList();
+    }
+
+    private String getFirstVisitedEventDate(List<java.sql.Date> yourEventsDates) {
+        if (yourEventsDates.isEmpty()) return "";
+        else return yourEventsDates.get(0).toString();
     }
 }
