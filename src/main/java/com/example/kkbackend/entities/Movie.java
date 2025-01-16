@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,5 +38,12 @@ public class Movie {
             return 0;
         }
         return ratings.stream().map(Rate::getRating).mapToInt(Integer::intValue).sum() / ratings.size();
+    }
+
+    public int getControversy() {
+        var max = ratings.stream().map(Rate::getRating).max(Comparator.naturalOrder());
+        var min = ratings.stream().map(Rate::getRating).min(Comparator.naturalOrder());
+        if (max.isEmpty() || min.isEmpty()) {return 0;}
+        return max.get() - min.get();
     }
 }

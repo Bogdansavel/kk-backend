@@ -80,6 +80,9 @@ public class WrappedController {
         var topMovies = movies.stream().sorted(Comparator.comparingInt(Movie::averageRating).reversed()).toList();
         var worstMovies = movies.stream().sorted(Comparator.comparingInt(Movie::averageRating)).toList();
 
+        var moviesKpId = new HashMap<Integer, MovieDto>();
+        movies.forEach(movie -> moviesKpId.put(movie.getKinopoiskId(), MovieController.fromMovieToDto(movie)));
+
         var mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);;
         var moviesData = movies.stream()
                 .filter(movie -> movie.getKinopoiskData() != null)
@@ -91,14 +94,22 @@ public class WrappedController {
                     }
                 }).toList();
 
-        var persons = new HashMap<KPPerson, Integer>();
-        moviesData.stream().map(KinopoiskData::persons).flatMap(Set::stream)
-                .filter(person -> person.profession().equals("актеры"))
-                .forEach(person -> {
-            persons.merge(person, 1, Integer::sum);
-        });
-        var topPersons = persons.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).limit(3).toList();
+        var persons = new HashMap<KPPerson, List<MovieDto>>();
+        moviesData.forEach(movie -> {
+                    movie.persons().stream()
+                    .filter(person -> person.profession().equals("актеры"))
+                    .forEach(person -> {
+                        if (persons.containsKey(person)) {
+                            persons.get(person).add(moviesKpId.get(movie.id()));
+                        } else {
+                            var list = new ArrayList<MovieDto>();
+                            list.add(moviesKpId.get(movie.id()));
+                            persons.put(person, list);
+                        }});
+                });
+        var topPersons = new ArrayList<>(persons.entrySet().stream()
+                .sorted(Comparator.comparingInt(o -> o.getValue().size())).toList());
+        Collections.reverse(topPersons);
 
         var offers = new HashMap<Member, Integer>();
         movies.stream().map(Movie::getMember).filter(Objects::nonNull)
@@ -124,8 +135,6 @@ public class WrappedController {
             if (entry.getKey().equals(memberOptional.get())) break;
         }
 
-        var moviesKpId = new HashMap<Integer, MovieDto>();
-        movies.forEach(movie -> moviesKpId.put(movie.getKinopoiskId(), MovieController.fromMovieToDto(movie)));
         var countries = new HashMap<String, List<MovieDto>>();
         moviesData
                 .forEach(movie ->
@@ -141,6 +150,23 @@ public class WrappedController {
         var topCountries = new ArrayList<>(countries.entrySet().stream()
                 .sorted(Comparator.comparingInt(o -> o.getValue().size())).toList());
         Collections.reverse(topCountries);
+
+        var ages = new HashMap<Integer, List<MovieDto>>();
+        for (int age = 1920; age <= 2020; age+=10) {
+            ages.put(age, new ArrayList<>());
+        }
+        moviesData
+                .forEach(movie ->
+                        ages.forEach((key, value) -> {
+                            if (movie.year() < key + 10 && movie.year() > key) {
+                                ages.get(key).add(moviesKpId.get(movie.id()));
+                            }
+                        })
+                );
+        var topAges = new ArrayList<>(ages.entrySet().stream()
+                .sorted(Comparator.comparingInt(o -> o.getValue().size()))
+                .filter(e -> !e.getValue().isEmpty()).toList());
+        Collections.reverse(topAges);
 
         var yourEventsDates = memberOptional.get().getEvents().stream().map(Event::getDate).sorted().toList();
         var events = eventRepository.findAll();
@@ -197,6 +223,17 @@ public class WrappedController {
 
         var years = moviesData.stream().sorted(Comparator.comparingInt(KinopoiskData::year)).toList();
 
+        var controverses = movies.stream().sorted(Comparator.comparingInt(Movie::getControversy).reversed())
+                .limit(6).map(MovieController::fromMovieToDto).map(
+                        m ->
+                             new MovieDto(
+                                    m.id(), m.kinopoiskId(), m.name(),
+                                    m.ratings().stream().sorted(Comparator.comparingInt(RateDto::rating).reversed())
+                                            .toList(),
+                                    m.photoName(), m.posterUrl(), m.averageRating(), m.member()
+                            )
+                ).toList();
+
         return new WrappedDto(
                 events.size(),
                 getFirstVisitedEventDate(yourEventsDates),
@@ -224,11 +261,13 @@ public class WrappedController {
                 worstMovies.stream().limit(3).map(MovieController::fromMovieToDto).toList(),
                 calculateGenres(moviesData),
                 topCountries.stream().map(c -> new CountyEntryDto(c.getKey(), c.getValue())).toList(),
+                topAges.stream().map(a -> new CountyEntryDto(a.getKey().toString(), a.getValue())).toList(),
                 moviesData.stream().map(KinopoiskData::persons).flatMap(Set::stream)
                         .filter(person -> person.profession().equals("актеры")).map(KPPerson::id).distinct().count(),
-                topPersons.stream().map(e -> new KPPersonEntry(e.getKey(), e.getValue())).toList(),
+                topPersons.stream().map(e -> new KPPersonEntry(e.getKey(), e.getValue())).limit(12).toList(),
                 years.get(0),
-                years.get(years.size()-1)
+                years.get(years.size()-1),
+                controverses
         );
     }
 

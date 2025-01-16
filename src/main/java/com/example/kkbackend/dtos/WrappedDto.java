@@ -25,9 +25,11 @@ public record WrappedDto (
         List<MovieDto> worstMovies,
         List<StringEntry> topGenres,
         List<CountyEntryDto> countries,
+        List<CountyEntryDto> ages,
         long actorsCount,
         List<KPPersonEntry> topPersons,
         KinopoiskData oldestMovie,
-        KinopoiskData newestMovie
+        KinopoiskData newestMovie,
+        List<MovieDto> controverses
 ) {
 }
