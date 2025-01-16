@@ -91,13 +91,6 @@ public class WrappedController {
                     }
                 }).toList();
 
-        var countries = new HashMap<String, Integer>();
-        moviesData.stream().map(KinopoiskData::countries).flatMap(Set::stream).map(KPCountry::name).forEach(country -> {
-            countries.merge(country, 1, Integer::sum);
-        });
-        var topCountries = countries.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()));
-
         var persons = new HashMap<KPPerson, Integer>();
         moviesData.stream().map(KinopoiskData::persons).flatMap(Set::stream)
                 .filter(person -> person.profession().equals("актеры"))
@@ -106,13 +99,6 @@ public class WrappedController {
         });
         var topPersons = persons.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).limit(3).toList();
-
-        var topArtiestMovies = moviesData.stream()
-                .filter(
-                data -> data.persons().stream()
-                        .map(KPPerson::id).anyMatch(id -> id.equals(topPersons.get(0).getKey().id())))
-                .map(KinopoiskData::id)
-                .toList();
 
         var offers = new HashMap<Member, Integer>();
         movies.stream().map(Movie::getMember).filter(Objects::nonNull)
@@ -137,6 +123,24 @@ public class WrappedController {
             topRatesPlace++;
             if (entry.getKey().equals(memberOptional.get())) break;
         }
+
+        var moviesKpId = new HashMap<Integer, MovieDto>();
+        movies.forEach(movie -> moviesKpId.put(movie.getKinopoiskId(), MovieController.fromMovieToDto(movie)));
+        var countries = new HashMap<String, List<MovieDto>>();
+        moviesData
+                .forEach(movie ->
+                    movie.countries().stream().map(KPCountry::name).forEach(country -> {
+                        if (countries.containsKey(country)) {
+                            countries.get(country).add(moviesKpId.get(movie.id()));
+                        } else {
+                            var list = new ArrayList<MovieDto>();
+                            list.add(moviesKpId.get(movie.id()));
+                            countries.put(country, list);
+                        }})
+                );
+        var topCountries = new ArrayList<>(countries.entrySet().stream()
+                .sorted(Comparator.comparingInt(o -> o.getValue().size())).toList());
+        Collections.reverse(topCountries);
 
         var yourEventsDates = memberOptional.get().getEvents().stream().map(Event::getDate).sorted().toList();
         var events = eventRepository.findAll();
@@ -219,12 +223,10 @@ public class WrappedController {
                 topMovies.stream().limit(3).map(MovieController::fromMovieToDto).toList(),
                 worstMovies.stream().limit(3).map(MovieController::fromMovieToDto).toList(),
                 calculateGenres(moviesData),
-                topCountries.map(e -> new StringEntry(e.getKey(), e.getValue())).toList(),
+                topCountries.stream().map(c -> new CountyEntryDto(c.getKey(), c.getValue())).toList(),
                 moviesData.stream().map(KinopoiskData::persons).flatMap(Set::stream)
                         .filter(person -> person.profession().equals("актеры")).map(KPPerson::id).distinct().count(),
                 topPersons.stream().map(e -> new KPPersonEntry(e.getKey(), e.getValue())).toList(),
-                movies.stream().filter(m -> topArtiestMovies.contains(m.getKinopoiskId()))
-                        .map(MovieController::fromMovieToDto).toList(),
                 years.get(0),
                 years.get(years.size()-1)
         );
