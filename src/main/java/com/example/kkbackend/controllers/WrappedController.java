@@ -266,7 +266,7 @@ public class WrappedController {
                 topRatesPlace,
                 topRates.stream().map(entry ->
                         Map.entry(MemberMapper.toDto(entry.getKey()), entry.getValue().intValue())
-                ).limit(3).map(e -> new MemberDtoEntry(e.getKey(), e.getValue())).toList(),
+                ).limit(6).map(e -> new MemberDtoEntry(e.getKey(), e.getValue())).toList(),
                 topMovies.stream().limit(3).map(MovieController::fromMovieToDto).toList(),
                 worstMovies.stream().limit(3).map(MovieController::fromMovieToDto).toList(),
                 calculateGenres(moviesData),
