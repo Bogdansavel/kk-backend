@@ -249,10 +249,10 @@ public class WrappedController {
                 getFirstVisitedEventDate(yourEventsDates),
                 yourEventsDates.size(),
                 topVisitorsPlace,
-                topVisits.stream().limit(3).map(e -> new MemberDtoEntry(e.getKey(), e.getValue())).toList(),
+                topVisits.stream().limit(6).map(e -> new MemberDtoEntry(e.getKey(), e.getValue())).toList(),
                 streak,
                 topStreaksPlace,
-                topStreaks.stream().limit(3).map(e -> new MemberDtoEntry(e.getKey(), e.getValue())).toList(),
+                topStreaks.stream().limit(6).map(e -> new MemberDtoEntry(e.getKey(), e.getValue())).toList(),
                 eventsYouMissed.size(),
                 offersCount,
                 topOffers.limit(6).map(entry ->
