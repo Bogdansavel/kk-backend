@@ -30,6 +30,8 @@ public record WrappedDto (
         List<KPPersonEntry> topPersons,
         KinopoiskData oldestMovie,
         KinopoiskData newestMovie,
-        List<MovieDto> controverses
+        List<MovieDto> controverses,
+        double allRatingsAvg,
+        double myRatingsAvg
 ) {
 }

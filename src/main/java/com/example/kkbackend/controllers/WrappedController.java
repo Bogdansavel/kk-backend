@@ -23,6 +23,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -215,9 +216,11 @@ public class WrappedController {
             if (entry.getKey().equals(MemberMapper.toDto(memberOptional.get()))) break;
         }
 
-
-        var eventsAfterYourVisit = allEventsDates.stream()
-                .filter(d -> d.after(yourEventsDates.get(0)) || d.equals(yourEventsDates.get(0))).toList();
+        List<Date> eventsAfterYourVisit = new ArrayList<>();
+        if (!yourEventsDates.isEmpty()) {
+            eventsAfterYourVisit = allEventsDates.stream()
+                    .filter(d -> d.after(yourEventsDates.get(0)) || d.equals(yourEventsDates.get(0))).toList();
+        }
         var eventsYouMissed = new ArrayList<>(eventsAfterYourVisit);
         eventsYouMissed.removeIf(yourEventsDates::contains);
 
@@ -233,6 +236,13 @@ public class WrappedController {
                                     m.photoName(), m.posterUrl(), m.averageRating(), m.member()
                             )
                 ).toList();
+
+        var ratingsStats = movies.stream()
+                .map(Movie::getRatings).flatMap(List::stream).map(Rate::getRating)
+                .mapToInt(Integer::intValue).summaryStatistics();
+
+        var myRatingsStats = memberOptional.get().getRatings().stream().map(Rate::getRating)
+                .mapToInt(Integer::intValue).summaryStatistics();
 
         return new WrappedDto(
                 events.size(),
@@ -267,7 +277,9 @@ public class WrappedController {
                 topPersons.stream().map(e -> new KPPersonEntry(e.getKey(), e.getValue())).limit(12).toList(),
                 years.get(0),
                 years.get(years.size()-1),
-                controverses
+                controverses,
+                ratingsStats.getAverage(),
+                myRatingsStats.getAverage()
         );
     }
 
