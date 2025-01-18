@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -68,7 +70,7 @@ public class WrappedController {
 
     @GetMapping("/{telegramId}/{userName}/{firstName}")
     public WrappedDto generateWrapped(@PathVariable String userName, @PathVariable String firstName,
-                                @PathVariable String telegramId) {
+                                @PathVariable String telegramId) throws ParseException {
         var memberOptional = memberService.getMemberByTelegramIdOrFirstNameOrUsername(
                 Integer.parseInt(telegramId), firstName, userName);
         if (memberOptional.isEmpty()) {
@@ -77,7 +79,11 @@ public class WrappedController {
                             telegramId, userName, firstName));
         }
 
-        var movies = movieRepository.findAll().stream().filter(m -> m.getKinopoiskId() != 0).toList();
+        var events = eventRepository.findAllByDateBetween(
+                new SimpleDateFormat("yyyy-MM-dd").parse("2024-01-12"),
+                new SimpleDateFormat("yyyy-MM-dd").parse("2025-01-11"));
+
+        var movies = events.stream().map(Event::getMovie).toList();
         var topMovies = movies.stream().sorted(Comparator.comparingInt(Movie::averageRating).reversed()).toList();
         var worstMovies = movies.stream().sorted(Comparator.comparingInt(Movie::averageRating)).toList();
 
@@ -169,8 +175,10 @@ public class WrappedController {
                 .filter(e -> !e.getValue().isEmpty()).toList());
         Collections.reverse(topAges);
 
-        var yourEventsDates = memberOptional.get().getEvents().stream().map(Event::getDate).sorted().toList();
-        var events = eventRepository.findAll();
+        var yourEventsDates = events.stream()
+                .filter(e -> e.getMembers().contains(memberOptional.get()))
+                .map(Event::getDate)
+                .toList();
         var allEventsDates = events.stream().map(Event::getDate).sorted().toList();
 
         int streak = 0;
@@ -185,7 +193,9 @@ public class WrappedController {
 
         var members = memberRepository.findAll();
         var visits = new HashMap<MemberDto, Integer>();
-        members.forEach(m -> visits.put(MemberMapper.toDto(m), m.getEvents().size()));
+        members.forEach(m -> visits.put(MemberMapper.toDto(m),
+                m.getEvents().stream().filter(events::contains).toList().size()));
+
         var topVisits = visits.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).toList();
         var topVisitorsPlace = 0;
@@ -196,7 +206,7 @@ public class WrappedController {
 
         var streaks = new HashMap<MemberDto, Integer>();
         members.forEach(m -> {
-            var allMembersEvents = m.getEvents().stream().map(Event::getDate).toList();
+            var allMembersEvents = m.getEvents().stream().filter(events::contains).map(Event::getDate).toList();
             int s = 0;
             int s2 = 0;
             for (var date : allEventsDates) {
