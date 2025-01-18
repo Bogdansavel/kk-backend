@@ -72,7 +72,7 @@ public class WrappedController {
     public WrappedDto generateWrapped(@PathVariable String userName, @PathVariable String firstName,
                                 @PathVariable String telegramId) throws ParseException {
         var memberOptional = memberService.getMemberByTelegramIdOrFirstNameOrUsername(
-                Integer.parseInt(telegramId), firstName, userName);
+                Double.parseDouble(telegramId), firstName, userName);
         if (memberOptional.isEmpty()) {
             throw new EntityNotFoundException(
                     MessageFormat.format("There is no member with telegramId {0}, username {1}, firstName {2}",

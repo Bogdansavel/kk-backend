@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface MemberService {
     Member getMemberByUsername(String username);
-    Optional<Member> getMemberByTelegramIdOrFirstNameOrUsername(int telegramId, String firstName, String username);
+    Optional<Member> getMemberByTelegramIdOrFirstNameOrUsername(double telegramId, String firstName, String username);
 }

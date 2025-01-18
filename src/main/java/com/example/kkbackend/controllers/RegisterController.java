@@ -44,7 +44,7 @@ public class RegisterController {
     @Transactional
     public RegisterResponseDto register(@RequestBody RegisterDto registerDto) {
         var member = memberService.getMemberByTelegramIdOrFirstNameOrUsername(
-                0, registerDto.firstName(), registerDto.username());
+                registerDto.telegramId(), registerDto.firstName(), registerDto.username());
         member = member.map(memberRepository::save)
                 .or(() -> Optional.of(memberRepository.save(MemberMapper.toModel(registerDto))));
 
@@ -65,7 +65,7 @@ public class RegisterController {
     @Transactional
     public RegisterResponseDto unregister(@RequestBody RegisterDto registerDto) {
         var member = memberService.getMemberByTelegramIdOrFirstNameOrUsername(
-                0, registerDto.firstName(), registerDto.username());
+                registerDto.telegramId(), registerDto.firstName(), registerDto.username());
         if (member.isEmpty()) {
             member = Optional.of(MemberMapper.toModel(registerDto));
         }

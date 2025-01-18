@@ -11,6 +11,6 @@ import java.util.UUID;
 public interface MemberRepository extends JpaRepository<Member, UUID> {
     Optional<Member> getMemberByUserName(String userName);
     Optional<Member> getMemberByFirstName(String firstName);
-    Optional<Member> getMemberByTelegramId(int telegramId);
+    Optional<Member> getMemberByTelegramId(double telegramId);
     Optional<Member> getMemberByTelegramIdOrUserNameOrFirstName(Integer telegramId, String userName, String firstName);
 }

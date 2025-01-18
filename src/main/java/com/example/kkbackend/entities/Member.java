@@ -16,7 +16,7 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private Integer telegramId;
+    private Double telegramId;
     @Column(unique = true)
     private String userName;
     private String photoUrl;
