@@ -1,5 +1,6 @@
 package com.example.kkbackend.service;
 
+import com.example.kkbackend.dtos.RegisterDto;
 import com.example.kkbackend.entities.Member;
 import com.example.kkbackend.repositories.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -38,7 +39,23 @@ public class MemberServiceImpl implements MemberService {
                 }
             }
             member.get().setTelegramId(telegramId);
-            memberRepository.save(member.get());
+            member = Optional.of(memberRepository.save(member.get()));
+        }
+        member = Optional.of(updateUsersInfo(member.get(), firstName, username));
+        return member;
+    }
+
+    private Member updateUsersInfo(Member member, String firstName, String username) {
+        var firstNameHasBeenUpdated = !member.getFirstName().equals(firstName);
+        var userNameHasBeenUpdated = !member.getUserName().equals(username);
+        if (firstNameHasBeenUpdated) {
+            member.setFirstName(firstName);
+        }
+        if (userNameHasBeenUpdated) {
+            member.setUserName(username);
+        }
+        if (firstNameHasBeenUpdated || userNameHasBeenUpdated) {
+            return memberRepository.save(member);
         }
         return member;
     }
