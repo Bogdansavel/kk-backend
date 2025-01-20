@@ -33,6 +33,9 @@ public class MemberServiceImpl implements MemberService {
             member = memberRepository.getMemberByUserName(username);
             if (member.isEmpty()) {
                 member = memberRepository.getMemberByFirstName(firstName);
+                if (member.isEmpty()) {
+                    return Optional.empty();
+                }
             }
             member.get().setTelegramId(telegramId);
             memberRepository.save(member.get());
