@@ -55,7 +55,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         var firstNameHasBeenUpdated = !member.getFirstName().equals(firstName);
-        var userNameHasBeenUpdated = member.getUserName() != null && !member.getUserName().equals(username);
+        var userNameHasBeenUpdated = !member.getUserName().equals(username);
         if (firstNameHasBeenUpdated) {
             member.setFirstName(firstName);
         }
