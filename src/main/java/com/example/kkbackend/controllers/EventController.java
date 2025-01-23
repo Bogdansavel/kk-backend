@@ -74,6 +74,8 @@ public class EventController {
                         .map(MemberMapper::toDto)
                         .collect(Collectors.toList())
                 )
+                .description(event.getDescription())
+                .posterUrl(event.getPosterUrl())
                 .build();
     }
 }

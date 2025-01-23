@@ -49,4 +49,6 @@ public class Event {
     private List<TelegramMessage> telegramMessages = new ArrayList<>();
     @ManyToMany(mappedBy = "events", fetch = FetchType.LAZY)
     private Set<Member> members = new HashSet<>();
+    private String description;
+    private String posterUrl;
 }

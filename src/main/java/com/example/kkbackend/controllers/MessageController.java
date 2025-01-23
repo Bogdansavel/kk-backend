@@ -23,6 +23,8 @@ public class MessageController {
 
     @GetMapping("current")
     public List<MessageDto> getMessages() {
+
+
         return eventRepository.getReferenceById(UUID.fromString(currentEvent)).getTelegramMessages()
                 .stream()
                 .map(this::fromTelegramMessageToDto)
