@@ -52,6 +52,9 @@ public class RegisterController {
         if (event.getMembers().contains(member.get())) {
             return RegisterResponseDto.builder().isAlreadyRegistered(true).build();
         }
+        if (event.getMembers().size() >= 15) {
+            return RegisterResponseDto.builder().limitIsExceeded(true).build();
+        }
         event.getMembers().add(member.get());
         member.get().getEvents().add(event);
         if (member.get().isFreshBlood() && member.get().getEvents().size() > 1) {
