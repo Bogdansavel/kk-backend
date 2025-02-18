@@ -20,6 +20,7 @@ public class Rate {
     private int rating;
     private boolean liked;
     private boolean discussable;
+    private String comment;
 
     @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false)

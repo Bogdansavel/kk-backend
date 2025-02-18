@@ -113,6 +113,7 @@ public class RateController {
                 .firstName(rate.getMember().getFirstName())
                 .movieId(rate.getMovie().getId().toString())
                 .telegramId(rate.getMember().getTelegramId())
+                .comment(rate.getComment())
                 .build();
     }
 
@@ -124,6 +125,7 @@ public class RateController {
                 .discussable(dto.discussable())
                 .member(member)
                 .movie(movie)
+                .comment(dto.comment())
                 .build();
     }
 }
