@@ -7,6 +7,7 @@ import com.example.kkbackend.repositories.EventRepository;
 import com.example.kkbackend.repositories.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -43,8 +44,14 @@ public class EventController {
     }
 
     @GetMapping("/movies")
-    public List<EventMovieDto> getAllEventsWithMoviesInfo() {
-        return eventRepository.findAll().stream()
+    public List<EventMovieDto> getAllEventsWithMoviesInfo(
+            @RequestParam Integer pageNumber, @RequestParam Integer pageSize) {
+        if (pageNumber == null || pageSize == null) {
+            pageNumber = 0;
+            pageSize = 10;
+        }
+
+        return eventRepository.findAllByOrderByDateDesc(PageRequest.of(pageNumber, pageSize)).getContent().stream()
                 //remove 2 years anniversary party event
                 .filter(e -> !Objects.equals(e.getDate().toString(),
                         "2025-01-12")
