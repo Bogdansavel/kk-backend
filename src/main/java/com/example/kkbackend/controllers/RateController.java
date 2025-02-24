@@ -46,7 +46,7 @@ public class RateController {
                 );
         return fromRateToDto(
                 rateRepository.save(
-                        fromDtoToRate(rateDto, member, movie)
+                        fromPostDtoToRate(rateDto, member, movie)
                 ));
     }
 
@@ -114,6 +114,17 @@ public class RateController {
     public static Rate fromDtoToRate(RateDto dto, Member member, Movie movie) {
         return Rate.builder()
                 .id(UUID.fromString(dto.id()))
+                .rating(dto.rating())
+                .liked(dto.liked())
+                .discussable(dto.discussable())
+                .member(member)
+                .movie(movie)
+                .comment(dto.comment())
+                .build();
+    }
+
+    public static Rate fromPostDtoToRate(RateDto dto, Member member, Movie movie) {
+        return Rate.builder()
                 .rating(dto.rating())
                 .liked(dto.liked())
                 .discussable(dto.discussable())
