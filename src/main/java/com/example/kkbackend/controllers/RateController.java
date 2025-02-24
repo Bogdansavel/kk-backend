@@ -46,13 +46,7 @@ public class RateController {
                 );
         return fromRateToDto(
                 rateRepository.save(
-                        Rate.builder()
-                                .rating(rateDto.rating())
-                                .liked(rateDto.liked())
-                                .discussable(rateDto.discussable())
-                                .movie(movie)
-                                .member(member)
-                                .build()
+                        fromDtoToRate(rateDto, member, movie)
                 ));
     }
 
