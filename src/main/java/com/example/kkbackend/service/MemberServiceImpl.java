@@ -1,6 +1,5 @@
 package com.example.kkbackend.service;
 
-import com.example.kkbackend.dtos.RegisterDto;
 import com.example.kkbackend.entities.Member;
 import com.example.kkbackend.repositories.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,13 +18,13 @@ public class MemberServiceImpl implements MemberService {
     public Member getById(UUID id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        MessageFormat.format("Member with id {0} is not existed!", id)));
+                        MessageFormat.format("Member with id {0} doesn't exist!", id)));
     }
 
     public Member getMemberByUsername(String username) {
         return memberRepository.getMemberByUserName(username)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        MessageFormat.format("Member with username {0} is not existed!", username)));
+                        MessageFormat.format("Member with username {0} doesn't exist!", username)));
     }
 
     public Optional<Member> getMemberByUsernameOrFirtsName(String firstName, String username) {
@@ -36,7 +35,8 @@ public class MemberServiceImpl implements MemberService {
         return member;
     }
 
-    public Optional<Member> getMemberByTelegramIdOrFirstNameOrUsername(double telegramId, String firstName, String username) {
+    public Optional<Member> getMemberByTelegramIdOrFirstNameOrUsername(double telegramId, String firstName,
+                                                                       String username) {
         var member = memberRepository.getMemberByTelegramId(telegramId);
         if (member.isEmpty()) {
             member = memberRepository.getMemberByUserName(username);

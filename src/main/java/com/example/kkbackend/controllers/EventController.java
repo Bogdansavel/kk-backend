@@ -2,9 +2,11 @@ package com.example.kkbackend.controllers;
 
 import com.example.kkbackend.dtos.*;
 import com.example.kkbackend.entities.Event;
+import com.example.kkbackend.entities.Movie;
 import com.example.kkbackend.mapper.MemberMapper;
 import com.example.kkbackend.repositories.EventRepository;
 import com.example.kkbackend.repositories.MovieRepository;
+import com.example.kkbackend.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -18,22 +20,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EventController {
     private final EventRepository eventRepository;
-    private final MovieRepository movieRepository;
+    private final MovieService movieService;
 
     @Value("${current-event}")
     private String currentEvent;
 
     @PostMapping
     public EventDto postEvent(@RequestBody CreateEventDto createEventDto) {
-        var movie = movieRepository.getById(createEventDto.movieId());
-        var event = eventRepository.save(
-                Event.builder()
-                        .movie(movie)
-                        .language(createEventDto.language())
-                        .date(java.sql.Date.valueOf(createEventDto.date()))
-                        .members(new HashSet<>())
-                        .telegramMessages(new ArrayList<>())
-                        .build());
+        var movie = movieService.getById(createEventDto.movieId());
+        var event = eventRepository.save(fromDtoToEvent(createEventDto, movie));
         return fromEventToDto(event);
     }
 
@@ -67,6 +62,7 @@ public class EventController {
 
     public static EventDto fromEventToDto(Event event) {
         return EventDto.builder()
+                .id(event.getId())
                 .movieId(event.getMovie().getId().toString())
                 .language(event.getLanguage())
                 .date(event.getDate().toString())
@@ -83,6 +79,17 @@ public class EventController {
                 )
                 .description(event.getDescription())
                 .posterUrl(event.getPosterUrl())
+                .build();
+    }
+
+    public static Event fromDtoToEvent(CreateEventDto createEventDto, Movie movie) {
+        return Event.builder()
+                .movie(movie)
+                .language(createEventDto.language())
+                .date(java.sql.Date.valueOf(createEventDto.date()))
+                .members(new HashSet<>())
+                .telegramMessages(new ArrayList<>())
+                .posterUrl(createEventDto.posterUrl())
                 .build();
     }
 }
