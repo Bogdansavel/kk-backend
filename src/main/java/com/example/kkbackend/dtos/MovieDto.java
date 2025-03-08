@@ -3,8 +3,16 @@ package com.example.kkbackend.dtos;
 import lombok.Builder;
 
 import java.util.List;
+import java.util.UUID;
 
 @Builder
-public record MovieDto(String id, int kinopoiskId, String name, List<RateDto> ratings, String photoName,
-                       String posterUrl, int averageRating, MemberDto member) {
+public record MovieDto(
+        UUID id,
+        int kinopoiskId,
+        String name,
+        List<RateDto> ratings,
+        String ratePhotoName,
+        String posterUrl,
+        int averageRating,
+        MemberDto member) {
 }

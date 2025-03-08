@@ -243,7 +243,7 @@ public class WrappedController {
                                     m.id(), m.kinopoiskId(), m.name(),
                                     m.ratings().stream().sorted(Comparator.comparingInt(RateDto::rating).reversed())
                                             .toList(),
-                                    m.photoName(), m.posterUrl(), m.averageRating(), m.member()
+                                    m.ratePhotoName(), m.posterUrl(), m.averageRating(), m.member()
                             )
                 ).toList();
 

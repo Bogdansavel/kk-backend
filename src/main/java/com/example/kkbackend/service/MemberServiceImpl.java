@@ -9,11 +9,19 @@ import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
+
+    public Member getById(UUID id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        MessageFormat.format("Member with id {0} is not existed!", id)));
+    }
+
     public Member getMemberByUsername(String username) {
         return memberRepository.getMemberByUserName(username)
                 .orElseThrow(() -> new EntityNotFoundException(

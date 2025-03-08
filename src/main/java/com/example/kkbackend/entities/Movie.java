@@ -22,7 +22,7 @@ public class Movie {
     private UUID id;
     private int kinopoiskId;
     private String name;
-    private String photoName;
+    private String ratePhotoName;
     private String posterUrl;
     private String kinopoiskData;
 
