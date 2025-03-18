@@ -6,16 +6,13 @@ import com.example.kkbackend.entities.Member;
 import com.example.kkbackend.entities.Movie;
 import com.example.kkbackend.dtos.CreateMovieDto;
 import com.example.kkbackend.mapper.MemberMapper;
-import com.example.kkbackend.repositories.MemberRepository;
 import com.example.kkbackend.repositories.MovieRepository;
 import com.example.kkbackend.service.MemberService;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.kkbackend.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,6 +22,7 @@ import java.util.stream.Collectors;
 public class MovieController {
     private final MovieRepository movieRepository;
     private final MemberService memberService;
+    private final MovieService movieService;
 
     @PostMapping
     public MovieDto postMovie(@RequestBody CreateMovieDto createMovieDto) {
@@ -36,8 +34,8 @@ public class MovieController {
     }
 
     @GetMapping("{id}")
-    public MovieDto getMovieById(@PathVariable String id) {
-        return fromMovieToDto(movieRepository.getReferenceById(UUID.fromString(id)));
+    public MovieDto getMovieById(@PathVariable UUID id) {
+        return fromMovieToDto(movieService.getById(id));
     }
 
     public static Movie fromDtoToMovie(CreateMovieDto createMovieDto, Member member) {

@@ -28,4 +28,8 @@ public class Rate {
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    public boolean isCommented() {
+        return comment != null && !comment.isEmpty();
+    }
 }
