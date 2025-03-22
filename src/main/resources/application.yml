@@ -13,7 +13,7 @@ spring:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
-current-event: ab7735ba-d5ca-4fda-b3a5-3e0c2c8d836b
+current-event: 4155f943-3ac5-4d2f-b138-9891479932c4
 
 kinopoisk-db:
   url: https://api.kinopoisk.dev/v1.4/
