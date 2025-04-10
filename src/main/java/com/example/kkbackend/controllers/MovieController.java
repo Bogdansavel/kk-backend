@@ -41,6 +41,11 @@ public class MovieController {
     }
 
     public static MovieDto fromMovieToDto(Movie movie) {
+        Long roundId = null;
+        if (movie.getRound() != null) {
+            roundId = movie.getRound().getId();
+        }
+
         return MovieDto.builder()
                 .id(movie.getId())
                 .kinopoiskId(movie.getKinopoiskId())
@@ -51,7 +56,7 @@ public class MovieController {
                 .posterUrl(movie.getPosterUrl())
                 .averageRating(movie.averageRating())
                 .member(MemberMapper.toDto(movie.getMember()))
-                .round(movie.getRound().getId())
+                .round(roundId)
                 .isReady(movie.getIsReady())
                 .build();
     }
