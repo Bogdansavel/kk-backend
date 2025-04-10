@@ -7,4 +7,5 @@ public record CreateMovieDto(
         String name,
         String ratePhotoName,
         String posterUrl,
-        UUID memberId) {}
+        UUID memberId,
+        Long round) {}

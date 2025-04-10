@@ -6,4 +6,5 @@ import java.util.UUID;
 
 public interface MovieService {
     Movie getById(UUID id);
+    Movie postMovie(Movie movie, long roundId, UUID memberId);
 }

@@ -25,6 +25,7 @@ public class Movie {
     private String ratePhotoName;
     private String posterUrl;
     private String kinopoiskData;
+    private Boolean isReady;
 
     @ManyToOne
     @JoinColumn(name="member_id")
@@ -32,6 +33,10 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie")
     private List<Rate> ratings = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "round_id")
+    private Round round;
 
     public int averageRating() {
         if (ratings.isEmpty()) {

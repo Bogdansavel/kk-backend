@@ -53,6 +53,13 @@ public class MemberServiceImpl implements MemberService {
         return member;
     }
 
+    @Override
+    public Member getByTelegramId(double telegramId) {
+        return memberRepository.getMemberByTelegramId(telegramId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                    MessageFormat.format("Member with telegram id {0} doesn't exist!", telegramId)));
+    }
+
     private Member updateUsersInfo(Member member, String firstName, String username) {
         if (member.getFirstName() == null) {
             member.setFirstName("");

@@ -14,5 +14,7 @@ public record MovieDto(
         String ratePhotoName,
         String posterUrl,
         int averageRating,
-        MemberDto member) {
+        MemberDto member,
+        Long round,
+        Boolean isReady) {
 }

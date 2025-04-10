@@ -9,4 +9,5 @@ public interface MemberService {
     Member getMemberByUsername(String username);
     Member getById(UUID id);
     Optional<Member> getMemberByTelegramIdOrFirstNameOrUsername(double telegramId, String firstName, String username);
+    Member getByTelegramId(double telegramId);
 }
