@@ -21,6 +21,7 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
     Page<Event> findAllByOrderByDateDesc(Pageable pageable);
 
     @EntityGraph(value = "event-entity-graph-with-movies")
-    List<Event> findAllByDateBetween(Date publicationTimeStart,
-                                     Date publicationTimeEnd);
+    List<Event> findAllByDateBetween(Date publicationTimeStart, Date publicationTimeEnd);
+
+    Event findFirstByOrderByDateDesc();
 }

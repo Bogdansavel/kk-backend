@@ -32,9 +32,9 @@ public class EventController {
         return fromEventToDto(event);
     }
 
-    @GetMapping
-    public EventDto getEvent() {
-        var event = eventRepository.getById(UUID.fromString(currentEvent));
+    @GetMapping()
+    public EventDto getLatestEvent() {
+        var event = eventRepository.findFirstByOrderByDateDesc();
         return fromEventToDto(event);
     }
 
