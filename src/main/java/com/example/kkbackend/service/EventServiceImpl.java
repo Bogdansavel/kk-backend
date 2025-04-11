@@ -61,6 +61,5 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException(MessageFormat.format("Event with id {0} doesn't exist!", id))
         );
-        }
     }
 }
