@@ -7,6 +7,8 @@ import com.example.kkbackend.entities.TelegramMessage;
 import com.example.kkbackend.repositories.EventRepository;
 import com.example.kkbackend.repositories.RoundRepository;
 import com.example.kkbackend.repositories.TelegramMessageRepository;
+import com.example.kkbackend.service.EventService;
+import com.example.kkbackend.service.EventServiceImpl;
 import com.example.kkbackend.service.RoundService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,19 +24,16 @@ import java.util.UUID;
 @RequestMapping("/telegram-message")
 @RequiredArgsConstructor
 public class TelegramMessageController {
-    @Value("${current-event}")
-    private String currentEvent;
-
     private final TelegramMessageRepository telegramMessageRepository;
-    private final EventRepository eventRepository;
     private final RoundRepository roundRepository;
 
     private final RoundService roundService;
+    private final EventService eventService;
 
     @PostMapping
     @Transactional
     public void postMessage(@RequestBody CreateTelegramMessageDto createTelegramMessageDto) {
-        var event = eventRepository.getById(UUID.fromString(currentEvent));
+        var event = eventService.getLatest();
         var message = TelegramMessage.builder()
                 .messageId(createTelegramMessageDto.messageId())
                 .chatId(createTelegramMessageDto.chatId())
