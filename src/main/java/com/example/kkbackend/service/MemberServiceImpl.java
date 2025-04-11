@@ -66,7 +66,11 @@ public class MemberServiceImpl implements MemberService {
     public Member getOrSave(RegisterDto registerDto) {
         var member = getMemberByTelegramIdOrFirstNameOrUsername(
                 registerDto.telegramId(), registerDto.firstName(), registerDto.username());
-        return member.orElse(memberRepository.save(MemberMapper.toModel(registerDto)));
+        if (member.isPresent()) {
+            member.get().setUserName(registerDto.username());
+            member.get().setFirstName(registerDto.firstName());
+        }
+        return memberRepository.save(member.orElse(MemberMapper.toModel(registerDto)));
     }
 
     private Member updateUsersInfo(Member member, String firstName, String username) {
