@@ -1,6 +1,8 @@
 package com.example.kkbackend.service;
 
+import com.example.kkbackend.dtos.RegisterDto;
 import com.example.kkbackend.entities.Member;
+import com.example.kkbackend.mapper.MemberMapper;
 import com.example.kkbackend.repositories.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +60,13 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.getMemberByTelegramId(telegramId)
                 .orElseThrow(() -> new EntityNotFoundException(
                     MessageFormat.format("Member with telegram id {0} doesn't exist!", telegramId)));
+    }
+
+    @Override
+    public Member getOrSave(RegisterDto registerDto) {
+        var member = getMemberByTelegramIdOrFirstNameOrUsername(
+                registerDto.telegramId(), registerDto.firstName(), registerDto.username());
+        return member.orElse(memberRepository.save(MemberMapper.toModel(registerDto)));
     }
 
     private Member updateUsersInfo(Member member, String firstName, String username) {
