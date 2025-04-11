@@ -22,9 +22,6 @@ public class EventController {
     private final EventRepository eventRepository;
     private final MovieService movieService;
 
-    @Value("${current-event}")
-    private String currentEvent;
-
     @PostMapping
     public EventDto postEvent(@RequestBody CreateEventDto createEventDto) {
         var movie = movieService.getById(createEventDto.movieId());
