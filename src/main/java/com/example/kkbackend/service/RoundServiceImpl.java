@@ -35,7 +35,9 @@ public class RoundServiceImpl implements RoundService {
     }
 
     @Override
-    public Round prepareRound(Round round) {
+    @Transactional
+    public Round prepare() {
+        var round = getActiveRound();
         var movies = round.getMovies();
         movies.forEach(movie -> movie.setIsReady(false));
         return roundRepository.save(round);

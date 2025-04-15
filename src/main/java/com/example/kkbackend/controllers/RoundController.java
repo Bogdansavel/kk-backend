@@ -24,13 +24,10 @@ public class RoundController {
         return fromRoundToDto(roundRepository.save(new Round(createRoundDto.id(), createRoundDto.isActive())));
     }
 
-    /*
-    @PostMapping("/prepare")
-    public RoundDto prepareRoundMovies(@RequestBody CreateRoundDto createRoundDto) {
-        return fromRoundToDto(roundRepository.save(new Round(createRoundDto.id())));
+    @PutMapping("/prepare")
+    public RoundDto prepareRoundMovies() {
+        return fromRoundToDto(roundService.prepare());
     }
-
-     */
 
     @PostMapping("/setReady")
     public RoundDto setReady(@RequestBody SetReadyDto setReadyDto) {
