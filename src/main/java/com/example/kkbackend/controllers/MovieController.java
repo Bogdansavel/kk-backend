@@ -6,10 +6,12 @@ import com.example.kkbackend.entities.Movie;
 import com.example.kkbackend.dtos.CreateMovieDto;
 import com.example.kkbackend.mapper.MemberMapper;
 import com.example.kkbackend.service.MovieService;
+import com.example.kkbackend.service.RoundService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MovieController {
     private final MovieService movieService;
+    private final RoundService roundService;
 
     @PostMapping
     public MovieDto postMovie(@RequestBody CreateMovieDto createMovieDto) {
@@ -28,6 +31,14 @@ public class MovieController {
     @GetMapping("{id}")
     public MovieDto getMovieById(@PathVariable UUID id) {
         return fromMovieToDto(movieService.getById(id));
+    }
+
+    @GetMapping("/ready")
+    public List<MovieWithKinopoiskDataDto> getReadyMovies() {
+        var round = roundService.getActiveRound();
+        return round.getMovies().stream().filter(Movie::getIsReady)
+                .map(MovieController::fromMovieToWithKinopoiskDataDto)
+                .collect(Collectors.toList());
     }
 
     public static Movie fromDtoToMovie(CreateMovieDto createMovieDto) {
@@ -71,6 +82,7 @@ public class MovieController {
                 .posterUrl(movie.getPosterUrl())
                 .averageRating(movie.averageRating())
                 .kinopoiskData(movie.getKinopoiskData())
+                .language(movie.getLanguage())
                 .build();
     }
 }

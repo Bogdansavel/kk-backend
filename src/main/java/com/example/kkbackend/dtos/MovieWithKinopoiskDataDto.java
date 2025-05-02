@@ -12,5 +12,6 @@ public record MovieWithKinopoiskDataDto(
         List<RateDto> ratings,
         String posterUrl,
         int averageRating,
-        String kinopoiskData) {
+        String kinopoiskData,
+        int language) {
 }

@@ -26,6 +26,7 @@ public class Movie {
     private String posterUrl;
     private String kinopoiskData;
     private Boolean isReady;
+    private int language;
 
     @ManyToOne
     @JoinColumn(name="member_id")
