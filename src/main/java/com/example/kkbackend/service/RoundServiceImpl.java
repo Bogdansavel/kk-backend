@@ -39,7 +39,7 @@ public class RoundServiceImpl implements RoundService {
     public Round prepare() {
         var round = getActiveRound();
         var movies = round.getMovies();
-        movies.forEach(movie -> movie.setIsReady(false));
+        movies.forEach(movie -> movie.setIsReady(null));
         return roundRepository.save(round);
     }
 
