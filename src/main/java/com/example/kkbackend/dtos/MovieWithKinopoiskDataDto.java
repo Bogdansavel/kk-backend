@@ -13,5 +13,5 @@ public record MovieWithKinopoiskDataDto(
         String posterUrl,
         int averageRating,
         String kinopoiskData,
-        int language) {
+        Integer language) {
 }
