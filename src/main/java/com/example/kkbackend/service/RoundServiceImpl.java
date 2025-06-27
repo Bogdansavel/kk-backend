@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,22 +23,31 @@ public class RoundServiceImpl implements RoundService {
                 new EntityNotFoundException(MessageFormat.format("Round number {0} doesn't exist!", id)));
     }
 
-    @Override
-    public Round getActiveRound() {
-        var activeRounds = roundRepository.findByIsActiveTrue();
+    private List<Round> getActiveRounds() {
+        var activeRounds = roundRepository.findByIsActiveTrueOrderByIdDesc();
         if (activeRounds.isEmpty()) {
             throw new ActiveRoundsCountException("There is no active rounds yet!");
         }
-        if (activeRounds.size() > 1) {
-            throw new ActiveRoundsCountException("There are more than one active rounds!");
+        return activeRounds;
+    }
+
+    @Override
+    public Round getLastActiveRound() {
+        return getActiveRounds().get(0);
+    }
+
+    @Override
+    public Round getPreviousActiveRound() {
+        var activeRounds = getActiveRounds();
+        if (activeRounds.size() < 2) {
+            throw new ActiveRoundsCountException("There is only one active round!");
         }
-        return activeRounds.get(0);
+        return getActiveRounds().get(1);
     }
 
     @Override
     @Transactional
-    public Round prepare() {
-        var round = getActiveRound();
+    public Round prepare(Round round) {
         var movies = round.getMovies();
         movies.forEach(movie -> movie.setIsReady(null));
         return roundRepository.save(round);
@@ -45,9 +55,21 @@ public class RoundServiceImpl implements RoundService {
 
     @Override
     @Transactional
+    public Round preparePreviousActiveRound() {
+        return prepare(getPreviousActiveRound());
+    }
+
+    @Override
+    @Transactional
+    public Round prepareLastActiveRound() {
+        return prepare(getLastActiveRound());
+    }
+
+    @Override
+    @Transactional
     public Round setReady(double telegramId, boolean isReady) {
         var member = memberService.getByTelegramId(telegramId);
-        var round = getActiveRound();
+        var round = getLastActiveRound();
         for(var movie : round.getMovies()) {
             if (movie.getMember().getId().equals(member.getId())) {
                 movie.setIsReady(isReady);

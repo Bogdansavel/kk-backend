@@ -35,7 +35,7 @@ public class MovieController {
 
     @GetMapping("/ready")
     public List<MovieWithKinopoiskDataDto> getReadyMovies() {
-        var round = roundService.getActiveRound();
+        var round = roundService.getLastActiveRound();
         return round.getMovies().stream().filter(Movie::getIsReady)
                 .map(MovieController::fromMovieToWithKinopoiskDataDto)
                 .collect(Collectors.toList());
@@ -69,6 +69,7 @@ public class MovieController {
                 .member(MemberMapper.toDto(movie.getMember()))
                 .round(roundId)
                 .isReady(movie.getIsReady())
+                .kinopoiskData(movie.getKinopoiskData())
                 .build();
     }
 

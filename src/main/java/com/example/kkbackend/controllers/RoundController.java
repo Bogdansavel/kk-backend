@@ -24,9 +24,14 @@ public class RoundController {
         return fromRoundToDto(roundRepository.save(new Round(createRoundDto.id(), createRoundDto.isActive())));
     }
 
-    @PutMapping("/prepare")
-    public RoundDto prepareRoundMovies() {
-        return fromRoundToDto(roundService.prepare());
+    @PutMapping("/prepare/last")
+    public RoundDto prepareLastActiveRoundMovies() {
+        return fromRoundToDto(roundService.prepareLastActiveRound());
+    }
+
+    @PutMapping("/prepare/previous")
+    public RoundDto preparePreviousActiveRoundMovies() {
+        return fromRoundToDto(roundService.preparePreviousActiveRound());
     }
 
     @PostMapping("/setReady")
@@ -35,8 +40,8 @@ public class RoundController {
     }
 
     @GetMapping()
-    public RoundDto getActiveRound() {
-        return fromRoundToDto(roundService.getActiveRound());
+    public RoundDto getLastActiveRound() {
+        return fromRoundToDto(roundService.getLastActiveRound());
     }
 
     public static RoundDto fromRoundToDto(Round round) {
