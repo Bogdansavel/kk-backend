@@ -2,8 +2,8 @@ package com.example.kkbackend.service;
 import com.example.kkbackend.entities.Event;
 import com.example.kkbackend.entities.Member;
 import com.example.kkbackend.repositories.EventRepository;
-import com.example.kkbackend.repositories.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
-    private final MemberService memberService;
 
     @Override
     public Event getLatest() {
@@ -61,5 +60,19 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException(MessageFormat.format("Event with id {0} doesn't exist!", id))
         );
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        var event = getById(id);
+        eventRepository.customDelete(event);
+    }
+
+    @Override
+    @Transactional
+    public Event stop(UUID id) {
+        var event = getById(id);
+        event.getMovie().setRound(null);
+        return eventRepository.save(event);
     }
 }

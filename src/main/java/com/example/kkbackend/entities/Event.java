@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.BatchSize;
 
 import java.util.*;
 
@@ -45,10 +44,17 @@ public class Event {
     private Movie movie;
     private String language;
     private java.sql.Date date;
-    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<TelegramMessage> telegramMessages = new ArrayList<>();
     @ManyToMany(mappedBy = "events", fetch = FetchType.LAZY)
     private Set<Member> members = new HashSet<>();
     private String description;
     private String posterUrl;
+
+    @PreRemove
+    private void removeMemberAssociations() {
+        for (Member member : this.getMembers()) {
+            member.getEvents().remove(this);
+        }
+    }
 }

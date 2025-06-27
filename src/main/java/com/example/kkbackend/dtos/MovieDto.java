@@ -16,5 +16,6 @@ public record MovieDto(
         int averageRating,
         MemberDto member,
         Long round,
-        Boolean isReady) {
+        Boolean isReady,
+        String kinopoiskData) {
 }

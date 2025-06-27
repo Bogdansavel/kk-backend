@@ -29,6 +29,17 @@ public class EventController {
         return fromEventToDto(event);
     }
 
+    @PutMapping("/stop/{id}")
+    public EventDto stopEvent(@PathVariable UUID id) {
+        return fromEventToDto(eventService.stop(id));
+    }
+
+    @DeleteMapping("{id}")
+    public boolean deleteEvent(@PathVariable UUID id) {
+        eventService.deleteById(id);
+        return true;
+    }
+
     @GetMapping()
     public EventDto getLatestEvent() {
         var event = eventRepository.findFirstByOrderByDateDesc();

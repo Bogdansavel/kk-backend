@@ -12,4 +12,6 @@ public interface EventService {
     Event addMembers(Event event, List<Member> members);
     Event removeMember(Event event, Member member);
     Event getById(UUID id);
+    void deleteById(UUID id);
+    Event stop(UUID id);
 }

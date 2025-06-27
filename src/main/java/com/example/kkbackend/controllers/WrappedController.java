@@ -62,8 +62,7 @@ public class WrappedController {
                 //exclude 2 years anniversary entity
                 .filter(movie -> !movie.getId().equals(UUID.fromString("408536e4-9a1a-4eb7-87bf-fc5d77d8326f")))
                 .forEach(movie ->
-                movie.setKinopoiskData(
-                        kinopoiskDbClient.getMovieByKinopoiskId(movie.getKinopoiskId())));
+                movie.setKinopoiskData(kinopoiskDbClient.getMovieByKinopoiskId(movie.getKinopoiskId())));
         movieRepository.saveAll(movies);
         return true;
     }
@@ -243,7 +242,7 @@ public class WrappedController {
                                     m.id(), m.kinopoiskId(), m.name(),
                                     m.ratings().stream().sorted(Comparator.comparingInt(RateDto::rating).reversed())
                                             .toList(),
-                                    m.ratePhotoName(), m.posterUrl(), m.averageRating(), m.member(), null, null
+                                    m.ratePhotoName(), m.posterUrl(), m.averageRating(), m.member(), null, null, null
                             )
                 ).toList();
 

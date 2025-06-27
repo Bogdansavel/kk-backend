@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface EventRepository extends JpaRepository<Event, UUID> {
+public interface EventRepository extends JpaRepository<Event, UUID>, CustomEventRepository {
     @EntityGraph(value = "event-entity-graph-with-movies")
     @Override
     List<Event> findAll();
