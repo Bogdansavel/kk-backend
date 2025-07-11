@@ -67,6 +67,7 @@ public class WrappedController {
         return true;
     }
 
+    /*
     @GetMapping("/{telegramId}/{userName}/{firstName}")
     public WrappedDto generateWrapped(@PathVariable String userName, @PathVariable String firstName,
                                 @PathVariable String telegramId) throws ParseException {
@@ -291,6 +292,7 @@ public class WrappedController {
                 myRatingsStats.getAverage()
         );
     }
+     */
 
     private List<StringEntry> calculateGenres(List<KinopoiskData> moviesData) {
         var genres = new HashMap<String, Integer>();
