@@ -15,7 +15,6 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
     private Double telegramId;
     @Column(unique = true)
     private String userName;
@@ -38,4 +37,8 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private Set<Movie> movie = new HashSet<>();
+
+    public Optional<String> getUserName() {
+        return Optional.ofNullable(userName);
+    }
 }

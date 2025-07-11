@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,30 +30,45 @@ public class MemberServiceImpl implements MemberService {
                         MessageFormat.format("Member with username {0} doesn't exist!", username)));
     }
 
-    public Optional<Member> getMemberByUsernameOrFirtsName(String firstName, String username) {
-            var member = memberRepository.getMemberByUserName(username);
-            if (member.isEmpty()) {
-                member = memberRepository.getMemberByFirstName(firstName);
+    public Member getMemberByTelegramIdOrUsername(
+            Optional<Double> telegramId, Optional<String> username) {
+        var member = getOptionalMemberByTelegramIdOrUsername(telegramId, username);
+        if (member.isEmpty()) {
+            var errorMessages = new ArrayList<String>();
+            if (telegramId.isEmpty()) {
+                errorMessages.add("telegramId = " + telegramId);
             }
+            if (username.isEmpty()) {
+                errorMessages.add("username = " + username);
+            }
+            throw new EntityNotFoundException("There is no member with " + String.join(", ", errorMessages));
+        }
+        return member.get();
+    }
+
+    private Optional<Member> getOptionalMemberByTelegramIdOrUsername(
+            Optional<Double> telegramId, Optional<String> username) {
+        if (telegramId.isEmpty() && username.isEmpty()) {
+            throw new IllegalArgumentException("Provide at least one field for searching member!");
+        }
+
+        Optional<Member> member = Optional.empty();
+        if (telegramId.isPresent()) {
+            member = memberRepository.getMemberByTelegramId(telegramId.get());
+        }
+        if (username.isPresent()) {
+            var usernameValue = username.get();
+            usernameValue = trimUsername(usernameValue);
+            member = memberRepository.getMemberByUserName(usernameValue);
+        }
         return member;
     }
 
-    public Optional<Member> getMemberByTelegramIdOrFirstNameOrUsername(double telegramId, String firstName,
-                                                                       String username) {
-        var member = memberRepository.getMemberByTelegramId(telegramId);
-        if (member.isEmpty()) {
-            member = memberRepository.getMemberByUserName(username);
-            if (member.isEmpty()) {
-                member = memberRepository.getMemberByFirstName(firstName);
-                if (member.isEmpty()) {
-                    return Optional.empty();
-                }
-            }
-            member.get().setTelegramId(telegramId);
-            member = Optional.of(memberRepository.save(member.get()));
+    private String trimUsername(String username) {
+        if (username.charAt(0) == '@') {
+            username = username.substring(1);
         }
-        member = Optional.of(updateUsersInfo(member.get(), firstName, username));
-        return member;
+        return username;
     }
 
     @Override
@@ -64,33 +80,30 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member getOrSave(RegisterDto registerDto) {
-        var member = getMemberByTelegramIdOrFirstNameOrUsername(
-                registerDto.telegramId(), registerDto.firstName(), registerDto.username());
+        var member = getOptionalMemberByTelegramIdOrUsername(
+                Optional.of(registerDto.telegramId()), Optional.ofNullable(registerDto.firstName())); //searching by 2 fields because initially I was storing members my username which is turned to be optional by telegram API
         if (member.isPresent()) {
-            member.get().setUserName(registerDto.username());
-            member.get().setFirstName(registerDto.firstName());
+            updateUsersInfo(member.get(),
+                    Optional.ofNullable(registerDto.firstName()),
+                    Optional.ofNullable(registerDto.username()));
+            return member.get();
+        } else {
+            return memberRepository.save(MemberMapper.toModel(registerDto));
         }
-        return memberRepository.save(member.orElse(MemberMapper.toModel(registerDto)));
     }
 
-    private Member updateUsersInfo(Member member, String firstName, String username) {
-        if (member.getFirstName() == null) {
-            member.setFirstName("");
+    private Member updateUsersInfo(Member member, Optional<String> firstName, Optional<String> username) {
+        var isFirstNameChanged = !Optional.ofNullable(member.getFirstName()).equals(firstName) && firstName.isPresent();
+        var isUserNameChanged = !member.getUserName().equals(username) && username.isPresent();
+
+        if (isFirstNameChanged) {
+            member.setFirstName(firstName.get());
+        }
+        if (isUserNameChanged) {
+            member.setUserName(username.get());
         }
 
-        if (member.getUserName() == null) {
-            member.setUserName("");
-        }
-
-        var firstNameHasBeenUpdated = !member.getFirstName().equals(firstName);
-        var userNameHasBeenUpdated = !member.getUserName().equals(username);
-        if (firstNameHasBeenUpdated) {
-            member.setFirstName(firstName);
-        }
-        if (userNameHasBeenUpdated) {
-            member.setUserName(username);
-        }
-        if (firstNameHasBeenUpdated || userNameHasBeenUpdated) {
+        if (isFirstNameChanged || isUserNameChanged) {
             return memberRepository.save(member);
         }
         return member;

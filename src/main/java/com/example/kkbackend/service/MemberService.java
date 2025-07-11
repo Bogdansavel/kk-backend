@@ -9,8 +9,7 @@ import java.util.UUID;
 public interface MemberService {
     Member getMemberByUsername(String username);
     Member getById(UUID id);
-    Optional<Member> getMemberByTelegramIdOrFirstNameOrUsername(double telegramId, String firstName, String username);
+    Member getMemberByTelegramIdOrUsername(Optional<Double> telegramId, Optional<String> username);
     Member getByTelegramId(double telegramId);
     Member getOrSave(RegisterDto registerDto);
-
 }

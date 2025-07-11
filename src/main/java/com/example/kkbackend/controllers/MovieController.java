@@ -25,7 +25,8 @@ public class MovieController {
     @PostMapping
     public MovieDto postMovie(@RequestBody CreateMovieDto createMovieDto) {
         return fromMovieToDto(movieService.postMovie(
-                fromDtoToMovie(createMovieDto), createMovieDto.round(), createMovieDto.memberId()));
+                fromDtoToMovie(createMovieDto), createMovieDto.round(), createMovieDto.telegramId(),
+                createMovieDto.username()));
     }
 
     @GetMapping("{id}")

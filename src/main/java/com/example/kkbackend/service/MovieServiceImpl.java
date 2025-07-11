@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,9 +32,9 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     @Transactional
-    public Movie postMovie(Movie movie, long roundId, UUID memberId) {
+    public Movie postMovie(Movie movie, long roundId, Optional<Double> telegramId, Optional<String> username) {
         movie.setRound(roundService.getById(roundId));
-        movie.setMember(memberService.getById(memberId));
+        movie.setMember(memberService.getMemberByTelegramIdOrUsername(telegramId, username));
         return movieRepository.save(movie);
     }
 }

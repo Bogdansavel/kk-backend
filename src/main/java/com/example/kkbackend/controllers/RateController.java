@@ -103,7 +103,7 @@ public class RateController {
                 .rating(rate.getRating())
                 .liked(rate.isLiked())
                 .discussable(rate.isDiscussable())
-                .username(rate.getMember().getUserName())
+                .username(rate.getMember().getUserName().orElse(null))
                 .firstName(rate.getMember().getFirstName())
                 .movieId(rate.getMovie().getId().toString())
                 .telegramId(rate.getMember().getTelegramId())

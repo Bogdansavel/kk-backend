@@ -16,7 +16,7 @@ public class MemberMapper {
         if (member == null) return null;
         return MemberDto.builder()
                 .telegramId(member.getTelegramId())
-                .username(member.getUserName())
+                .username(member.getUserName().orElse(null))
                 .firstName(member.getFirstName())
                 .freshBlood(member.isFreshBlood())
                 .build();
