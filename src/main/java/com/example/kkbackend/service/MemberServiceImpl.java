@@ -56,7 +56,7 @@ public class MemberServiceImpl implements MemberService {
         if (telegramId.isPresent()) {
             member = memberRepository.getMemberByTelegramId(telegramId.get());
         }
-        if (username.isPresent()) {
+        if (member.isEmpty() && username.isPresent()) {
             var usernameValue = username.get();
             usernameValue = trimUsername(usernameValue);
             member = memberRepository.getMemberByUserName(usernameValue);
@@ -79,7 +79,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member getOrSave(RegisterDto registerDto) {
+    public Member getOrCreate(RegisterDto registerDto) {
         var member = getOptionalMemberByTelegramIdOrUsername(
                 Optional.of(registerDto.telegramId()), Optional.ofNullable(registerDto.firstName())); //searching by 2 fields because initially I was storing members my username which is turned to be optional by telegram API
         if (member.isPresent()) {

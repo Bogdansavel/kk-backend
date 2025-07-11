@@ -32,7 +32,7 @@ public class RegisterController {
     @PostMapping("register")
     @Transactional
     public RegisterResponseDto register(@RequestBody RegisterDto registerDto) {
-        var member = memberService.getOrSave(registerDto);
+        var member = memberService.getOrCreate(registerDto);
         var event = eventService.getLatest();
 
         if (event.getMembers().contains(member)) {
@@ -48,7 +48,7 @@ public class RegisterController {
     @PostMapping("unregister")
     @Transactional
     public RegisterResponseDto unregister(@RequestBody RegisterDto registerDto) {
-        var member = memberService.getOrSave(registerDto);
+        var member = memberService.getOrCreate(registerDto);
         var event = eventService.getLatest();
 
         return registerResponseDtoFromEvent(eventService.removeMember(event, member));

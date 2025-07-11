@@ -11,5 +11,5 @@ public interface MemberService {
     Member getById(UUID id);
     Member getMemberByTelegramIdOrUsername(Optional<Double> telegramId, Optional<String> username);
     Member getByTelegramId(double telegramId);
-    Member getOrSave(RegisterDto registerDto);
+    Member getOrCreate(RegisterDto registerDto);
 }
