@@ -46,8 +46,13 @@ public class RoundController {
 
     public static RoundDto fromRoundToDto(Round round) {
         TelegramMessageDto message = null;
+        TelegramMessageDto pollMessage = null;
         if (round.getMessage() != null) {
             message = TelegramMessageController.fromModelToDto(round.getMessage());
+        }
+
+        if (round.getPollMessage() != null) {
+            pollMessage = TelegramMessageController.fromModelToDto(round.getPollMessage());
         }
 
         return RoundDto.builder()
@@ -55,6 +60,7 @@ public class RoundController {
                 .movies(round.getMovies().stream().map(MovieController::fromMovieToDto)
                         .collect(Collectors.toSet()))
                 .message(message)
+                .pollMessage(pollMessage)
                 .build();
     }
 }

@@ -9,6 +9,7 @@ public record RoundDto(
         long id,
         Set<MovieDto> movies,
         TelegramMessageDto message,
+        TelegramMessageDto pollMessage,
         boolean isActive
 ) {
 }

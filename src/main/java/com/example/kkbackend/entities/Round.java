@@ -26,6 +26,10 @@ public class Round {
     @JoinColumn(name = "message_id", referencedColumnName = "id")
     private TelegramMessage message;
 
+    @OneToOne
+    @JoinColumn(name = "poll_message_id", referencedColumnName = "id")
+    private TelegramMessage pollMessage;
+
     @Column(nullable = false)
     boolean isActive = false;
 
