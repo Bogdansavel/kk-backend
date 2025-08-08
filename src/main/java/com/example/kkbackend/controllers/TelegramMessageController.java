@@ -8,7 +8,6 @@ import com.example.kkbackend.repositories.RoundRepository;
 import com.example.kkbackend.repositories.TelegramMessageRepository;
 import com.example.kkbackend.service.EventService;
 import com.example.kkbackend.service.RoundService;
-import com.example.kkbackend.service.TelegramMessageService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +24,6 @@ public class TelegramMessageController {
 
     private final RoundService roundService;
     private final EventService eventService;
-    private final TelegramMessageService telegramMessageService;
 
     @PostMapping
     @Transactional
@@ -37,12 +35,6 @@ public class TelegramMessageController {
                 .event(event)
                 .build();
         telegramMessageRepository.save(message);
-    }
-
-    @PostMapping("/poll")
-    @Transactional
-    public boolean postPollMessage(@RequestBody CreateTelegramMessageDto createTelegramMessageDto) {
-        return telegramMessageService.createPollMessage(fromCreateDtoToModel(createTelegramMessageDto));
     }
 
     @PostMapping("/round")
