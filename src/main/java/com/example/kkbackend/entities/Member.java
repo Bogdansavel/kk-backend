@@ -33,10 +33,10 @@ public class Member {
     private Set<Event> events;
 
     @OneToMany(mappedBy = "member")
-    private List<Rate> ratings = new ArrayList<>();
+    private List<Rate> ratings;
 
     @OneToMany(mappedBy = "member")
-    private Set<Movie> movie = new HashSet<>();
+    private Set<Movie> movie;
 
     public Optional<String> getUserName() {
         return Optional.ofNullable(userName);

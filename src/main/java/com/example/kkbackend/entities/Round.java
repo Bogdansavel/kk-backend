@@ -20,7 +20,7 @@ public class Round {
     @Id
     private long id;
     @OneToMany(mappedBy = "round", fetch = FetchType.LAZY)
-    private List<Movie> movies = new LinkedList<>();
+    private List<Movie> movies;
 
     @OneToOne
     @JoinColumn(name = "message_id", referencedColumnName = "id")
@@ -31,7 +31,7 @@ public class Round {
     private TelegramMessage pollMessage;
 
     @Column(nullable = false)
-    boolean isActive = false;
+    boolean isActive;
 
     public Round(long id, boolean isActive) {
         this.id = id;

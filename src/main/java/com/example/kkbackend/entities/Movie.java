@@ -35,7 +35,7 @@ public class Movie {
     private Member member;
 
     @OneToMany(mappedBy = "movie")
-    private List<Rate> ratings = new ArrayList<>();
+    private List<Rate> ratings;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "round_id")

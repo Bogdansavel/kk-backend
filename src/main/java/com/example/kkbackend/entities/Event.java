@@ -45,7 +45,7 @@ public class Event {
     private String language;
     private java.sql.Date date;
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<TelegramMessage> telegramMessages = new ArrayList<>();
+    private List<TelegramMessage> telegramMessages;
     @ManyToMany(mappedBy = "events", fetch = FetchType.LAZY)
     private Set<Member> members = new HashSet<>();
     @Column(length = 10000)
