@@ -1,4 +1,6 @@
 package com.example.kkbackend.service;
+import com.example.kkbackend.controllers.EventController;
+import com.example.kkbackend.dtos.CreateEventDto;
 import com.example.kkbackend.entities.Event;
 import com.example.kkbackend.entities.Member;
 import com.example.kkbackend.repositories.EventRepository;
@@ -16,7 +18,14 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
+    private final MovieService movieService;
     private final EventRepository eventRepository;
+
+    @Override
+    public Event createEvent(CreateEventDto createEventDto) {
+        var movie = movieService.getById(createEventDto.movieId());
+        return eventRepository.save(EventController.fromDtoToEvent(createEventDto, movie));
+    }
 
     @Override
     public Event getLatest() {

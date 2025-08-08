@@ -6,7 +6,6 @@ import com.example.kkbackend.entities.Movie;
 import com.example.kkbackend.mapper.MemberMapper;
 import com.example.kkbackend.repositories.EventRepository;
 import com.example.kkbackend.service.EventService;
-import com.example.kkbackend.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +19,10 @@ import java.util.stream.Collectors;
 public class EventController {
     private final EventService eventService;
     private final EventRepository eventRepository;
-    private final MovieService movieService;
 
     @PostMapping
     public EventDto postEvent(@RequestBody CreateEventDto createEventDto) {
-        var movie = movieService.getById(createEventDto.movieId());
-        var event = eventRepository.save(fromDtoToEvent(createEventDto, movie));
-        return fromEventToDto(event);
+        return fromEventToDto(eventService.createEvent(createEventDto));
     }
 
     @PutMapping("/stop/{id}")
@@ -98,6 +94,7 @@ public class EventController {
                 .members(new HashSet<>())
                 .telegramMessages(new ArrayList<>())
                 .posterUrl(createEventDto.posterUrl())
+                .members(Set.of(movie.getMember()))
                 .build();
     }
 }
