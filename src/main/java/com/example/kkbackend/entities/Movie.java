@@ -23,7 +23,9 @@ public class Movie {
     private int kinopoiskId;
     private String name;
     private String ratePhotoName;
+    @Column(length = 10000)
     private String posterUrl;
+    @Column(columnDefinition="TEXT")
     private String kinopoiskData;
     private Boolean isReady;
     private Integer language;

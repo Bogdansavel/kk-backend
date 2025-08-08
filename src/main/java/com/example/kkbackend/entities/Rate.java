@@ -20,6 +20,7 @@ public class Rate {
     private int rating;
     private boolean liked;
     private boolean discussable;
+    @Column(length = 1000)
     private String comment;
 
     @ManyToOne

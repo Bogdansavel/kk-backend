@@ -4,21 +4,17 @@ import com.example.kkbackend.dtos.CreateTelegramMessageDto;
 import com.example.kkbackend.dtos.CreateTelegramMessageForRoundDto;
 import com.example.kkbackend.dtos.TelegramMessageDto;
 import com.example.kkbackend.entities.TelegramMessage;
-import com.example.kkbackend.repositories.EventRepository;
 import com.example.kkbackend.repositories.RoundRepository;
 import com.example.kkbackend.repositories.TelegramMessageRepository;
 import com.example.kkbackend.service.EventService;
-import com.example.kkbackend.service.EventServiceImpl;
 import com.example.kkbackend.service.RoundService;
+import com.example.kkbackend.service.TelegramMessageService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/telegram-message")
@@ -29,6 +25,7 @@ public class TelegramMessageController {
 
     private final RoundService roundService;
     private final EventService eventService;
+    private final TelegramMessageService telegramMessageService;
 
     @PostMapping
     @Transactional
@@ -40,6 +37,12 @@ public class TelegramMessageController {
                 .event(event)
                 .build();
         telegramMessageRepository.save(message);
+    }
+
+    @PostMapping("/poll")
+    @Transactional
+    public boolean postPollMessage(@RequestBody CreateTelegramMessageDto createTelegramMessageDto) {
+        return telegramMessageService.createPollMessage(fromCreateDtoToModel(createTelegramMessageDto));
     }
 
     @PostMapping("/round")
@@ -61,6 +64,13 @@ public class TelegramMessageController {
         return TelegramMessageDto.builder()
                 .chatId(telegramMessage.getChatId())
                 .messageId(telegramMessage.getMessageId())
+                .build();
+    }
+
+    public static TelegramMessage fromCreateDtoToModel(CreateTelegramMessageDto createTelegramMessageDto) {
+        return TelegramMessage.builder()
+                .chatId(createTelegramMessageDto.chatId())
+                .messageId(createTelegramMessageDto.messageId())
                 .build();
     }
 }
