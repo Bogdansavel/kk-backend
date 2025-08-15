@@ -47,7 +47,7 @@ public class Event {
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<TelegramMessage> telegramMessages;
     @ManyToMany(mappedBy = "events", fetch = FetchType.LAZY)
-    private Set<Member> members = new HashSet<>();
+    private Set<Member> members;
     @Column(length = 10000)
     private String description;
     private String posterUrl;
