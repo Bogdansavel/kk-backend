@@ -81,7 +81,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member getOrCreate(RegisterDto registerDto) {
         var member = getOptionalMemberByTelegramIdOrUsername(
-                Optional.of(registerDto.telegramId()), Optional.ofNullable(registerDto.firstName())); //searching by 2 fields because initially I was storing members my username which is turned to be optional by telegram API
+                Optional.of(registerDto.telegramId()), Optional.ofNullable(registerDto.username())); //searching by 2 fields because initially I was storing members my username which is turned to be optional by telegram API
         if (member.isPresent()) {
             updateUsersInfo(member.get(),
                     Optional.ofNullable(registerDto.firstName()),
