@@ -50,18 +50,17 @@ public class EventController {
             pageSize = 10;
         }
 
-        return eventRepository.findAllByOrderByDateDesc(PageRequest.of(pageNumber, pageSize)).getContent().stream()
+        return eventService.findAllEventsByMovieNameWithAllDetails("", PageRequest.of(pageNumber, pageSize))
+                .stream()
                 //remove 2 years anniversary party event
-                .filter(e -> !Objects.equals(e.getDate().toString(),
-                        "2025-01-12")
-                )
+                .filter(e -> !Objects.equals(e.getDate().toString(), "2025-01-12"))
                 .map(e ->
                     EventMovieDto.builder()
                         .movie(MovieController.fromMovieToDto(e.getMovie()))
                         .language(e.getLanguage())
                         .date(e.getDate().toString())
-                        .build()
-                ).toList();
+                        .build())
+                .toList();
     }
 
     public static EventDto fromEventToDto(Event event) {

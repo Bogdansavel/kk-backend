@@ -7,6 +7,7 @@ import com.example.kkbackend.repositories.EventRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -83,5 +84,11 @@ public class EventServiceImpl implements EventService {
         var event = getById(id);
         event.getMovie().setRound(null);
         return eventRepository.save(event);
+    }
+
+    @Override
+    @Transactional
+    public List<Event> findAllEventsByMovieNameWithAllDetails(String titlePattern, PageRequest pageRequest) {
+        return eventRepository.findAllByIdWithDetails(eventRepository.findAllMovies(pageRequest));
     }
 }

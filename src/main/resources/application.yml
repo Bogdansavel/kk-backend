@@ -12,6 +12,9 @@ spring:
         time_zone: UTC
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        format_sql: false
 
 kinopoisk-db:
   url: https://api.kinopoisk.dev/v1.4/
