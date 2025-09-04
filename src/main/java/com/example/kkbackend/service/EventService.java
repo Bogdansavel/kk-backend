@@ -5,6 +5,7 @@ import com.example.kkbackend.entities.Event;
 import com.example.kkbackend.entities.Member;
 import org.springframework.data.domain.PageRequest;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +16,8 @@ public interface EventService {
     Event addMembers(Event event, List<Member> members);
     Event removeMember(Event event, Member member);
     Event getById(UUID id);
+    Event getByMovieName(String name);
+    Event getByDate(LocalDate date);
     void deleteById(UUID id);
     Event stop(UUID id);
     List<Event> findAllEventsByMovieNameWithAllDetails(String titlePattern, PageRequest pageRequest);

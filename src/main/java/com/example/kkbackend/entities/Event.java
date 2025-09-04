@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @NamedEntityGraph(
@@ -43,7 +44,7 @@ public class Event {
     @JoinColumn(name = "movie_id", referencedColumnName = "id")
     private Movie movie;
     private String language;
-    private java.sql.Date date;
+    private LocalDate date;
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<TelegramMessage> telegramMessages;
     @ManyToMany(mappedBy = "events", fetch = FetchType.LAZY)

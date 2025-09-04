@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,16 @@ import java.util.stream.Collectors;
 public class EventController {
     private final EventService eventService;
     private final EventRepository eventRepository;
+
+    @GetMapping("/movie/{name}")
+    public EventDto getEventByMovieName(@PathVariable String name) {
+        return fromEventToDto(eventService.getByMovieName(name));
+    }
+
+    @GetMapping("/date/{date}")
+    public EventDto getEventByDate(@PathVariable String date) {
+        return fromEventToDto(eventService.getByDate(LocalDate.parse(date)));
+    }
 
     @PostMapping
     public EventDto postEvent(@RequestBody CreateEventDto createEventDto) {
@@ -89,7 +100,7 @@ public class EventController {
         return Event.builder()
                 .movie(movie)
                 .language(createEventDto.language())
-                .date(java.sql.Date.valueOf(createEventDto.date()))
+                .date(LocalDate.parse(createEventDto.date()))
                 .members(new HashSet<>())
                 .telegramMessages(new ArrayList<>())
                 .posterUrl(createEventDto.posterUrl())

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.text.MessageFormat;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,6 +70,20 @@ public class EventServiceImpl implements EventService {
     public Event getById(UUID id) {
         return eventRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException(MessageFormat.format("Event with id {0} doesn't exist!", id))
+        );
+    }
+
+    @Override
+    public Event getByMovieName(String name) {
+        return eventRepository.findAllByMovieName(name).stream().findFirst().orElseThrow(() ->
+                new EntityNotFoundException(MessageFormat.format("Event with name like {0} doesn't exist!", name))
+        );
+    }
+
+    @Override
+    public Event getByDate(LocalDate date) {
+        return eventRepository.findByDate(date).stream().findFirst().orElseThrow(() ->
+                new EntityNotFoundException(MessageFormat.format("Event on date {0} doesn't exist!", date))
         );
     }
 

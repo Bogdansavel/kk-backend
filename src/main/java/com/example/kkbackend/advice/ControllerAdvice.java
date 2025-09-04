@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.format.DateTimeParseException;
+
 @RestControllerAdvice
 @Slf4j
 public class ControllerAdvice {
@@ -22,6 +24,13 @@ public class ControllerAdvice {
     public ResponseEntity activeRoundsCountExceptionHandler(ActiveRoundsCountException ex) {
         log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler({DateTimeParseException.class})
+    public ResponseEntity dateTimeParseExceptionHandler(ActiveRoundsCountException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());
     }
 }

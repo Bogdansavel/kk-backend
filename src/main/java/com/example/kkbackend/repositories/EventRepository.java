@@ -7,30 +7,50 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, UUID>, CustomEventRepository {
     Event findFirstByOrderByDateDesc();
+    List<Event> findByDate(LocalDate date);
 
     @Query(
             value = """
         select e
         from Event e
         left join fetch e.movie
-        where e.movie.name like :movieName
+        where LOWER(e.movie.name) like LOWER(CONCAT('%', :movieName, '%'))
         """,
             countQuery = """
         select count(e)
         from Event e
         left join fetch e.movie
-        where e.movie.name like :movieName
+        where LOWER(e.movie.name) like LOWER(CONCAT('%', :movieName, '%'))
         """
     )
     List<Event> findAllByMovieName(
             @Param("movieName") String movieName,
             Pageable pageable
+    );
+
+    @Query(
+            value = """
+        select e
+        from Event e
+        left join fetch e.movie
+        where LOWER(e.movie.name) like LOWER(CONCAT('%', :movieName, '%'))
+        """,
+            countQuery = """
+        select count(e)
+        from Event e
+        left join fetch e.movie
+        where LOWER(e.movie.name) like LOWER(CONCAT('%', :movieName, '%'))
+        """
+    )
+    List<Event> findAllByMovieName(
+            @Param("movieName") String movieName
     );
 
     @Query(
