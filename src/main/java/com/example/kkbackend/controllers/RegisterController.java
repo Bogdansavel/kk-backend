@@ -33,7 +33,7 @@ public class RegisterController {
     @Transactional
     public RegisterResponseDto register(@RequestBody RegisterDto registerDto) {
         var member = memberService.getOrCreate(registerDto);
-        var event = eventService.getLatest();
+        var event = eventService.getById(UUID.fromString(registerDto.eventId()));
 
         if (event.getMembers().contains(member)) {
             return RegisterResponseDto.builder().isAlreadyRegistered(true).build();
@@ -49,7 +49,7 @@ public class RegisterController {
     @Transactional
     public RegisterResponseDto unregister(@RequestBody RegisterDto registerDto) {
         var member = memberService.getOrCreate(registerDto);
-        var event = eventService.getLatest();
+        var event = eventService.getById(UUID.fromString(registerDto.eventId()));
 
         return registerResponseDtoFromEvent(eventService.removeMember(event, member));
     }
