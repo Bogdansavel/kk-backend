@@ -3,6 +3,7 @@ import com.example.kkbackend.controllers.EventController;
 import com.example.kkbackend.dtos.CreateEventDto;
 import com.example.kkbackend.entities.Event;
 import com.example.kkbackend.entities.Member;
+import com.example.kkbackend.entities.Movie;
 import com.example.kkbackend.repositories.EventRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -25,7 +26,10 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event createEvent(CreateEventDto createEventDto) {
-        var movie = movieService.getById(createEventDto.movieId());
+        Movie movie = null;
+        if (createEventDto.movieId() != null) {
+            movie = movieService.getById(createEventDto.movieId());
+        }
         return eventRepository.save(EventController.fromDtoToEvent(createEventDto, movie));
     }
 

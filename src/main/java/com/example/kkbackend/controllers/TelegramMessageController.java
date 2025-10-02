@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/telegram-message")
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class TelegramMessageController {
     @PostMapping
     @Transactional
     public void postMessage(@RequestBody CreateTelegramMessageDto createTelegramMessageDto) {
-        var event = eventService.getLatest();
+        var event = eventService.getById(UUID.fromString(createTelegramMessageDto.eventId()));
         var message = TelegramMessage.builder()
                 .messageId(createTelegramMessageDto.messageId())
                 .chatId(createTelegramMessageDto.chatId())

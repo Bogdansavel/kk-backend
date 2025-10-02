@@ -26,6 +26,11 @@ public class EventController {
         return fromEventToDto(eventService.getByMovieName(name));
     }
 
+    @GetMapping("/{id}")
+    public EventDto getEventById(@PathVariable String id) {
+        return fromEventToDto(eventService.getById(UUID.fromString(id)));
+    }
+
     @GetMapping("/date/{date}")
     public EventDto getEventByDate(@PathVariable String date) {
         return fromEventToDto(eventService.getByDate(LocalDate.parse(date)));
@@ -75,9 +80,8 @@ public class EventController {
     }
 
     public static EventDto fromEventToDto(Event event) {
-        return EventDto.builder()
+        var eventDtoBuilder =  EventDto.builder()
                 .id(event.getId())
-                .movieId(event.getMovie().getId().toString())
                 .language(event.getLanguage())
                 .date(event.getDate().toString())
                 .messages(event.getTelegramMessages()
@@ -92,8 +96,13 @@ public class EventController {
                         .collect(Collectors.toList())
                 )
                 .description(event.getDescription())
-                .posterUrl(event.getPosterUrl())
-                .build();
+                .posterUrl(event.getPosterUrl());
+
+        if (event.getMovie() != null) {
+            eventDtoBuilder.movieId(event.getMovie().getId().toString());
+        }
+
+        return eventDtoBuilder.build();
     }
 
     public static Event fromDtoToEvent(CreateEventDto createEventDto, Movie movie) {
@@ -104,7 +113,6 @@ public class EventController {
                 .members(new HashSet<>())
                 .telegramMessages(new ArrayList<>())
                 .posterUrl(createEventDto.posterUrl())
-                .members(Set.of(movie.getMember()))
                 .build();
     }
 }
