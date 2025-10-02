@@ -70,6 +70,7 @@ public class EventController {
                 .stream()
                 //remove 2 years anniversary party event
                 .filter(e -> !Objects.equals(e.getDate().toString(), "2025-01-12"))
+                .filter(e -> e.getMovie() != null)
                 .map(e ->
                     EventMovieDto.builder()
                         .movie(MovieController.fromMovieToDto(e.getMovie()))
