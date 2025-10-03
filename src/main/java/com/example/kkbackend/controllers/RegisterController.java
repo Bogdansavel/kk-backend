@@ -34,8 +34,11 @@ public class RegisterController {
     public RegisterResponseDto register(@RequestBody RegisterDto registerDto) {
         var member = memberService.getOrCreate(registerDto);
         var event = eventService.getById(UUID.fromString(registerDto.eventId()));
+        //manshort exclusive check
+        var event1 = eventService.getById(UUID.fromString("8d7f269e-20f9-4d62-8d07-5329ebf74cb8"));
+        var event2 = eventService.getById(UUID.fromString("b6a92295-883d-48a2-8099-9545dd2c2549"));
 
-        if (event.getMembers().contains(member)) {
+        if (event1.getMembers().contains(member) || event2.getMembers().contains(member)) {
             return RegisterResponseDto.builder().isAlreadyRegistered(true).build();
         }
         if (event.getMembers().size() >= 16) {
