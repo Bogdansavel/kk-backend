@@ -38,7 +38,7 @@ public class RegisterController {
         if (event.getMembers().contains(member)) {
             return RegisterResponseDto.builder().isAlreadyRegistered(true).build();
         }
-        if (event.getMembers().size() >= 17) {
+        if (event.getMembers().size() >= 20) {
             return RegisterResponseDto.builder().limitIsExceeded(true).build();
         }
 
