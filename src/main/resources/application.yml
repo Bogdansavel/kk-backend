@@ -17,5 +17,5 @@ spring:
         format_sql: false
 
 kinopoisk-db:
-  url: https://api.kinopoisk.dev/v1.4/
+  url: https://api.poiskkino.dev/v1.4/
   token: E8EEGCE-EYF48XG-QN2MASG-GPS29F3
