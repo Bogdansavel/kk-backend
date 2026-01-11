@@ -7,9 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+
+import java.util.Date;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, UUID>, CustomEventRepository {
@@ -33,6 +36,19 @@ public interface EventRepository extends JpaRepository<Event, UUID>, CustomEvent
     List<Event> findAllByMovieName(
             @Param("movieName") String movieName,
             Pageable pageable
+    );
+
+    @Query(
+            value = """
+        select e
+        from Event e
+        left join fetch e.movie
+        where e.date >= :from and e.date <= :to
+        """
+    )
+    List<Event> findAllByDateBetween(
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to
     );
 
     @Query(
