@@ -2,6 +2,7 @@ package com.example.kkbackend.dtos;
 import com.example.kkbackend.dtos.kinopoiskData.KinopoiskData;
 
 import java.util.List;
+import java.util.Map;
 
 public record WrappedDto (
         long eventsCount,
@@ -35,6 +36,8 @@ public record WrappedDto (
         KinopoiskData newestMovie,
         List<MovieDto> controverses,
         double allRatingsAvg,
-        double myRatingsAvg
+        double myRatingsAvg,
+        List<LanguageDto> languages,
+        List<LanguageDto> datesVisits
 ) {
 }

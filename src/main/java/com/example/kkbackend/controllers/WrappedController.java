@@ -188,6 +188,17 @@ public class WrappedController {
                 .sorted(Comparator.comparingInt(o -> o.getValue().size())).toList());
         Collections.reverse(topCountries);
 
+        var languages = new HashMap<String, Integer>();
+        events
+                .stream().filter(e -> e.getLanguage() != null)
+                .forEach(event -> {
+                            if (languages.containsKey(event.getLanguage())) {
+                                languages.compute(event.getLanguage(), (k, v) -> v + 1);
+                            } else {
+                                languages.put(event.getLanguage(), 1);
+                            }}
+                );
+
         var ages = new HashMap<Integer, List<MovieDto>>();
         for (int age = 1920; age <= 2020; age+=10) {
             ages.put(age, new ArrayList<>());
@@ -287,6 +298,9 @@ public class WrappedController {
         var myRatingsStats = member.getRatings().stream().map(Rate::getRating)
                 .mapToInt(Integer::intValue).summaryStatistics();
 
+        var dateVisits = new TreeMap<LocalDate, Integer>();
+        events.forEach(event -> dateVisits.put(event.getDate(), event.getMembers().size()));
+
         var result = new WrappedDto(
                 events.size(),
                 getFirstVisitedEventDate(yourEventsDates),
@@ -325,7 +339,9 @@ public class WrappedController {
                 years.get(years.size()-1),
                 controverses,
                 ratingsStats.getAverage(),
-                myRatingsStats.getAverage()
+                myRatingsStats.getAverage(),
+                languages.entrySet().stream().map(c -> new LanguageDto(c.getKey(), c.getValue())).toList(),
+                dateVisits.entrySet().stream().map(c -> new LanguageDto(c.getKey().toString(), c.getValue())).toList()
         );
 
         return result;
