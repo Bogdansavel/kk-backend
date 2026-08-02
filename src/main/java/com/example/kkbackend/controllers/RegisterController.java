@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -20,6 +21,9 @@ import java.util.stream.Collectors;
 public class RegisterController {
     private final MemberService memberService;
     private final EventService eventService;
+
+    @Value("${app.max-members}")
+    private int maxMembers;
 
     @GetMapping("members")
     public List<MemberDto> getMembers() {
@@ -38,7 +42,7 @@ public class RegisterController {
         if (event.getMembers().contains(member)) {
             return RegisterResponseDto.builder().isAlreadyRegistered(true).build();
         }
-        if (event.getMembers().size() >= 10) {
+        if (event.getMembers().size() >= maxMembers) {
             return RegisterResponseDto.builder().limitIsExceeded(true).build();
         }
 
