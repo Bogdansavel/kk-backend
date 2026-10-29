@@ -49,6 +49,11 @@ public class RegisterController {
         return registerResponseDtoFromEvent(eventService.addMember(event, member));
     }
 
+    @GetMapping("maxCount")
+    public int getMaxCount() {
+        return maxMembers;
+    }
+
     @PostMapping("unregister")
     @Transactional
     public RegisterResponseDto unregister(@RequestBody RegisterDto registerDto) {
